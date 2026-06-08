@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitmaniac - Connected Fitness Network Simulator</title>
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #070b13;
+      --bg-card: rgba(18, 26, 44, 0.6);
+      --bg-subtle: rgba(10, 14, 23, 0.35);
+      --border-glass: rgba(255, 255, 255, 0.07);
+      
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-pink: #ff0844;
+      --accent-yellow: #f6d365;
+      --accent-green: #38ef7d;
+      
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-bright: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(79, 172, 254, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 8, 68, 0.08) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      color: var(--text-bright);
+      font-weight: 600;
+    }
+
+    header {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .brand-glow {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    /* Portal Grid Layout */
+    .portal-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 380px;
+      gap: 20px;
+      height: calc(100vh - 150px);
+      min-height: 700px;
+    }
+
+    @media (max-width: 1200px) {
+      .portal-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    /* Glassmorphic Columns */
+    .portal-column {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .column-header {
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .column-title {
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .column-body {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    /* Custom Scrollbars */
+    .column-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .column-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .column-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    /* Interactive UI widgets */
+    .glass-card {
+      background: rgba(10, 14, 23, 0.4);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: all 0.25s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 20px rgba(0, 242, 254, 0.05);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-cyan { background: rgba(0, 242, 254, 0.15); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.3); }
+    .badge-pink { background: rgba(255, 8, 68, 0.15); color: #ff4d6d; border: 1px solid rgba(255, 8, 68, 0.3); }
+    .badge-green { background: rgba(56, 239, 125, 0.15); color: var(--accent-green); border: 1px solid rgba(56, 239, 125, 0.3); }
+    .badge-yellow { background: rgba(246, 211, 101, 0.15); color: var(--accent-yellow); border: 1px solid rgba(246, 211, 101, 0.3); }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(10, 14, 23, 0.6);
+      border: 1px solid var(--border-glass);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+      color: #000000;
+      box-shadow: 0 4px 12px rgba(0, 242, 254, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 242, 254, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-glass);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--accent-pink) 0%, #b20a2c 100%);
+      color: white;
+    }
+
+    .active-client-tab {
+      border-color: var(--accent-cyan) !important;
+      color: var(--accent-cyan) !important;
+      background: rgba(0, 242, 254, 0.05) !important;
+    }
+
+    /* Phone viewport Mock */
+    .phone-container {
+      width: 100%;
+      height: 100%;
+      background: #090d16;
+      border-radius: 30px;
+      border: 6px solid #1a2333;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-notch {
+      width: 120px;
+      height: 18px;
+      background: #1a2333;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99;
+    }
+
+    .phone-body {
+      flex: 1;
+      padding: 15px;
+      padding-top: 25px;
+      overflow-y: auto;
+    }
+
+    .phone-tabs {
+      height: 48px;
+      background: #111827;
+      display: flex;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .phone-tab-btn {
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .phone-tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom: 2px solid var(--accent-cyan);
+    }
+
+    /* Simulated QR Laser scanning */
+    .scanner-viewfinder {
+      width: 140px;
+      height: 140px;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 8px;
+      position: relative;
+      margin: 15px auto;
+      overflow: hidden;
+    }
+
+    .scanner-laser {
+      width: 100%;
+      height: 2px;
+      background: var(--accent-pink);
+      position: absolute;
+      top: 0;
+      animation: scanLaser 2s infinite linear;
+    }
+
+    @keyframes scanLaser {
+      0% { top: 0; }
+      50% { top: 100%; }
+      100% { top: 0; }
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+
+    /* Light Theme overrides (Brights Mode) */
+    body.light-theme {
+      --bg-dark: #f8fafc;
+      --bg-card: rgba(255, 255, 255, 0.82);
+      --bg-subtle: rgba(15, 23, 42, 0.04);
+      --border-glass: rgba(15, 23, 42, 0.08);
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --text-bright: #0f172a;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(79, 172, 254, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 8, 68, 0.06) 0%, transparent 45%);
+    }
+
+    body.light-theme .form-input {
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--text-main);
+      border-color: rgba(15, 23, 42, 0.15);
+    }
+
+    body.light-theme .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    body.light-theme .phone-container {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    body.light-theme .phone-notch {
+      background: #cbd5e1;
+    }
+
+    body.light-theme .phone-tabs {
+      background: #f1f5f9;
+      border-top-color: rgba(15, 23, 42, 0.08);
+    }
+
+    body.light-theme .phone-tab-btn {
+      color: var(--text-muted);
+    }
+
+    body.light-theme .phone-tab-btn.active {
+      color: var(--accent-cyan);
+    }
+
+    body.light-theme .phone-body {
+      background-color: #f8fafc;
+    }
+
+    body.light-theme #phone-upi-modal,
+    body.light-theme #phone-milestones-modal {
+      background: rgba(248, 250, 252, 0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <span class="badge badge-cyan" style="margin-bottom: 5px;">Indian Unified Gym Network</span>
+      <h1>Fitmaniac Connected <span class="brand-glow">Network Simulator</span></h1>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <!-- Network Simulator Toggle Button -->
+        <button class="badge badge-cyan" id="simulator-network-btn" onclick="toggleSimulatorNetwork()" style="cursor:pointer; border:1px solid var(--accent-green); background:rgba(56, 239, 125, 0.1); font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 6px;" title="Simulate Network Drop">
+          <span id="network-indicator-dot" style="width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); transition: all 0.3s ease;"></span>
+          <span id="network-indicator-label">Network: Online</span>
+        </button>
+        <button class="badge badge-cyan" id="global-theme-btn" onclick="toggleTheme()" style="cursor:pointer; border:1px solid var(--accent-cyan); background:rgba(0, 242, 254, 0.1); padding: 0; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; line-height: 1;" title="Toggle Dark/Light theme">☀️</button>
+      </div>
+      <div style="font-size: 12px; color: var(--text-muted); text-align: right;">
+        ⚡ Made in India for Local Gym Centers<br>
+        💡 Currency: Indian Rupee (₹) | Major Indian Metro Hubs
+      </div>
+    </div>
+  </header>
+
+  <div class="portal-container">
+
+    <!-- 1. SUPER ADMIN CONTROL PANEL -->
+    <div class="portal-column">
+      <div class="column-header">
+        <h2 class="column-title" style="display:flex; align-items:center; gap:8px;">
+          🛡️ Super Admin Control Panel
+          <span id="admin-offline-badge" style="display:none; font-size:9px; padding:2px 6px; border-radius:4px; background:rgba(255,8,68,0.15); color:var(--accent-pink); border:1px solid rgba(255,8,68,0.3); font-weight:bold;">Offline</span>
+        </h2>
+        <button class="badge badge-cyan" onclick="adminExportExcel()" style="cursor:pointer; border:1px solid var(--accent-cyan); background:rgba(0, 242, 254, 0.1);">📊 Export Report</button>
+      </div>
+      <div class="column-body">
+        
+        <!-- Metrics -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+          <div class="glass-card" style="margin: 0; padding: 10px;">
+            <div style="font-size: 10px; color: var(--text-muted);">Partner Gym Centers</div>
+            <div style="font-size: 20px; font-weight: bold; color: var(--accent-cyan);" id="admin-gym-count">1</div>
+          </div>
+          <div class="glass-card" style="margin: 0; padding: 10px;">
+            <div style="font-size: 10px; color: var(--text-muted);">Active Indian Members</div>
+            <div style="font-size: 20px; font-weight: bold; color: var(--accent-pink);" id="admin-member-count">2</div>
+          </div>
+        </div>
+
+        <!-- Analytics SVG Line Graph -->
+        <div class="glass-card" style="margin-bottom: 15px;">
+          <h3 style="font-size: 11px; font-weight: bold; color: var(--text-bright); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">📈 Network Growth Trends</h3>
+          <svg width="100%" height="80" viewBox="0 0 300 80" style="background: rgba(0,0,0,0.2); border-radius: 6px;">
+            <defs>
+              <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent-cyan)" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="var(--accent-cyan)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M10 70 L 60 55 L 110 60 L 160 40 L 210 45 L 260 20 L 290 10 L 290 70 Z" fill="url(#glowGrad)" />
+            <line x1="10" y1="70" x2="290" y2="70" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+            <path d="M10 70 L 60 55 L 110 60 L 160 40 L 210 45 L 260 20 L 290 10" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-linecap="round" />
+            <circle cx="290" cy="10" r="3" fill="var(--accent-cyan)" />
+            <text x="12" y="77" fill="var(--text-muted)" font-size="6">Dec</text>
+            <text x="112" y="77" fill="var(--text-muted)" font-size="6">Feb</text>
+            <text x="212" y="77" fill="var(--text-muted)" font-size="6">Apr</text>
+            <text x="272" y="77" fill="var(--text-muted)" font-size="6">Jun (Live)</text>
+          </svg>
+        </div>
+
+        <!-- Add Gym Partner Form -->
+        <div class="glass-card">
+          <h3 style="font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;">➕ Register Partner Gym</h3>
+          <form id="add-gym-form" onsubmit="adminAddGym(event)">
+            <div class="form-group">
+              <label class="form-label">GYM NAME</label>
+              <input type="text" id="gym-name" class="form-input" placeholder="e.g. Golds Gym Koramangala" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">CITY / REGION LOCATION</label>
+              <input type="text" id="gym-loc" class="form-input" placeholder="e.g. HSR Layout Sector 3, Bangalore" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">UNIQUE SCANNER BARCODE ID</label>
+              <input type="text" id="gym-barcode" class="form-input" placeholder="e.g. fitfreak_001" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 5px;">Add Gym Partner to Network</button>
+          </form>
+        </div>
+
+        <!-- Partner Gyms List -->
+        <h3 style="font-size: 14px; margin-bottom: 10px;">🏢 Partner Network List</h3>
+        <div id="admin-gym-list">
+          <!-- Dynamic rendering -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. GYM CLIENT PANEL (PARTNER PORTAL) -->
+    <div class="portal-column">
+      <div class="column-header">
+        <h2 class="column-title" style="display:flex; align-items:center; gap:8px;">
+          🏢 Client Control Panel (Gym Desk)
+          <span id="client-offline-badge" style="display:none; font-size:9px; padding:2px 6px; border-radius:4px; background:rgba(255,8,68,0.15); color:var(--accent-pink); border:1px solid rgba(255,8,68,0.3); font-weight:bold;">Offline</span>
+        </h2>
+        <button class="badge badge-yellow" onclick="clientExportExcel()" style="cursor:pointer; border:1px solid var(--accent-yellow); background:rgba(246, 211, 101, 0.1);">📊 Export Members</button>
+      </div>
+      <div class="column-body">
+
+        <!-- Active Gym Selector -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">ACTIVE WORKSPACE LOCATION</label>
+          <select id="client-gym-selector" class="form-input" style="background: var(--bg-dark);" onchange="clientSelectGym(this.value)">
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
+
+        <!-- Client Portal Navigation Tabs -->
+        <div style="display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
+          <button id="client-tab-members-btn" class="btn btn-secondary active-client-tab" onclick="clientChangeTab('members')" style="padding: 6px 4px; font-size: 8px; flex: 1;">🏋️ Members</button>
+          <button id="client-tab-classes-btn" class="btn btn-secondary" onclick="clientChangeTab('classes')" style="padding: 6px 4px; font-size: 8px; flex: 1;">📅 Classes</button>
+          <button id="client-tab-mod-btn" class="btn btn-secondary" onclick="clientChangeTab('mod')" style="padding: 6px 4px; font-size: 8px; flex: 1;">💬 Mod</button>
+          <button id="client-tab-challenges-btn" class="btn btn-secondary" onclick="clientChangeTab('challenges')" style="padding: 6px 4px; font-size: 8px; flex: 1;">🏃 Challenges</button>
+          <button id="client-tab-poster-btn" class="btn btn-secondary" onclick="clientChangeTab('poster')" style="padding: 6px 4px; font-size: 8px; flex: 1;">🖨️ Poster</button>
+          <button id="client-tab-gate-btn" class="btn btn-secondary" onclick="clientChangeTab('gate')" style="padding: 6px 4px; font-size: 8px; flex: 1;">🚪 Gate</button>
+        </div>
+
+        <!-- TAB CONTENT: MEMBERS -->
+        <div id="client-content-members">
+          <!-- Add Customer Form -->
+          <div class="glass-card">
+            <h3 style="font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;">🏋️ Register New Athlete</h3>
+            <form id="add-member-form" onsubmit="clientAddCustomer(event)">
+              <div class="form-group">
+                <label class="form-label">ATHLETE FULL NAME</label>
+                <input type="text" id="member-name" class="form-input" placeholder="e.g. Rahul Sharma" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">EMAIL ADDRESS</label>
+                <input type="email" id="member-email" class="form-input" placeholder="e.g. rahul.sharma@gmail.com" required>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                  <label class="form-label">SUBSCRIPTION PLAN</label>
+                  <select id="member-plan" class="form-input" style="background: var(--bg-dark);" onchange="
+                    const isYear = this.value === 'Yearly';
+                    document.getElementById('member-price').value = isYear ? 12999 : this.value === 'Quarterly' ? 3999 : 1499;
+                    const cfInput = document.getElementById('member-carryforward');
+                    cfInput.disabled = !isYear;
+                    if (!isYear) cfInput.value = 0;
+                  ">
+                    <option value="Monthly">Monthly</option>
+                    <option value="Quarterly">Quarterly</option>
+                    <option value="Yearly">Yearly</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">PAYMENT CHANNEL</label>
+                  <select id="member-payment" class="form-input" style="background: var(--bg-dark);">
+                    <option value="Offline">Offline Cash / UPI</option>
+                    <option value="Online">Online App Pay</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PRICE PAID (₹) — EDITABLE FOR CUSTOM RATES</label>
+                <input type="number" id="member-price" class="form-input" placeholder="e.g. 1499" value="1499">
+              </div>
+              <div class="form-group">
+                <label class="form-label">CARRY-FORWARD DAYS (MAX 30, YEARLY ONLY)</label>
+                <input type="number" id="member-carryforward" class="form-input" min="0" max="30" placeholder="Disabled for Monthly/Quarterly" disabled value="0">
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top: 5px;">Create Member Profile</button>
+            </form>
+          </div>
+
+          <!-- Registered Customer List -->
+          <h3 style="font-size: 14px; margin-bottom: 10px;">👥 Registered Athletes & Renewals</h3>
+          <div id="client-customer-list">
+            <!-- Dynamic Customers rendered here -->
+          </div>
+
+          <!-- Gym attendance scanner logs -->
+          <h3 style="font-size: 14px; margin: 15px 0 10px 0;">📋 Daily Attendance check-in logs</h3>
+          <div id="client-attendance-list">
+            <!-- Log strings -->
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: CLASSES -->
+        <div id="client-content-classes" style="display: none;">
+          <!-- Add Special Class Form -->
+          <div class="glass-card">
+            <h3 style="font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;">📅 Schedule Special Class</h3>
+            <form id="add-class-form" onsubmit="clientAddClass(event)">
+              <div class="form-group">
+                <label class="form-label">CLASS TITLE</label>
+                <input type="text" id="class-title" class="form-input" placeholder="e.g. PRO Zumba Masterclass" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">TRAINER NAME</label>
+                <input type="text" id="class-trainer" class="form-input" placeholder="e.g. Sarah D'Souza" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">SCHEDULE TIME</label>
+                <input type="text" id="class-time" class="form-input" placeholder="e.g. Tomorrow 09:00 AM" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">SPOTS INFO</label>
+                <input type="text" id="class-spots" class="form-input" placeholder="e.g. 5 spots left" value="10 spots left" required>
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top: 5px;">Schedule & Broadcast Class</button>
+            </form>
+          </div>
+
+          <!-- Special Classes List -->
+          <h3 style="font-size: 14px; margin-bottom: 10px;">📅 Scheduled Special Classes</h3>
+          <div id="client-special-classes-list">
+            <!-- Dynamic Classes rendered here -->
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: COMMUNITY MOD -->
+        <div id="client-content-mod" style="display: none;">
+          <!-- Broadcast Announcement Form -->
+          <div class="glass-card">
+            <h3 style="font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;">📢 Broadcast Gym Announcement</h3>
+            <form id="broadcast-form" onsubmit="clientAddAnnouncement(event)">
+              <div class="form-group">
+                <label class="form-label">ANNOUNCEMENT TITLE</label>
+                <input type="text" id="broadcast-title" class="form-input" placeholder="e.g. Squat Rack Maintenance on Sunday" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ANNOUNCEMENT CONTENT</label>
+                <textarea id="broadcast-body" class="form-input" style="min-height: 60px; font-family: inherit; resize: none;" placeholder="Describe maintenance timings, special notices..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top: 5px;">📌 Pin & Broadcast Announcement</button>
+            </form>
+          </div>
+
+          <!-- Moderation feed -->
+          <h3 style="font-size: 14px; margin-bottom: 10px;">💬 Local Forum Feed (Moderator View)</h3>
+          <div id="client-mod-posts-list">
+            <!-- Pinned & Member posts with Delete buttons -->
+          </div>
+        </div>
+
+        <div id="client-content-challenges" style="display: none;">
+          <!-- Publish Gym Challenge Form -->
+          <div class="glass-card">
+            <h3 style="font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;">🏃 Publish Gym Segment Challenge</h3>
+            <form id="add-challenge-form" onsubmit="clientAddChallenge(event)">
+              <div class="form-group">
+                <label class="form-label">CHALLENGE TITLE</label>
+                <input type="text" id="challenge-title" class="form-input" placeholder="e.g. HRX 15-Min S&C Circuit" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CIRCUIT DETAILS & TARGETS</label>
+                <textarea id="challenge-desc" class="form-input" style="min-height: 60px; font-family: inherit; resize: none;" placeholder="Describe circuit movements, round targets..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top: 5px;">🚀 Launch Segment Challenge</button>
+            </form>
+          </div>
+
+          <!-- Active Gym Challenges List -->
+          <h3 style="font-size: 14px; margin-bottom: 10px;">🏆 Active Local Challenges & Rankings</h3>
+          <div id="client-challenges-list">
+            <!-- Dynamic challenges leaderboard render inside here -->
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: GATE POSTER -->
+        <div id="client-content-poster" style="display: none;">
+          <div class="glass-card" style="text-align: center; padding: 20px;">
+            <h3 style="font-size: 15px; margin-bottom: 10px;">🖨️ Gate Check-in Barcode Poster</h3>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; line-height: 15px;">
+              Download and print this poster for your entrance gate. Athletes scan this barcode with their Fitmaniac app.
+            </p>
+            <button class="btn btn-primary" onclick="downloadPosterImage()" style="margin-bottom: 15px; max-width: 300px; margin-left: auto; margin-right: auto;">📥 Download Gate Poster (PNG)</button>
+            
+            <!-- Poster Preview Box -->
+            <div style="display: flex; justify-content: center;">
+              <div id="simulator-poster-preview" style="
+                width: 240px;
+                height: 360px;
+                background: linear-gradient(135deg, #0a0e17 0%, #121a2c 100%);
+                border: 3px solid #00f2fe;
+                border-radius: 12px;
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                text-align: center;
+                box-shadow: 0 10px 25px rgba(0,242,254,0.15);
+                position: relative;
+              ">
+                <div>
+                  <span style="font-size: 16px; font-weight: 800; color: #fff; letter-spacing: 1.5px; display: block;">FITMANIAC</span>
+                  <span style="font-size: 6px; color: #00f2fe; display: block; font-weight: bold; letter-spacing: 0.5px;">CONNECTED NETWORK</span>
+                </div>
+                
+                <div>
+                  <h4 style="font-size: 13px; color: #fff; font-weight: bold; margin: 0;">SCAN TO CHECK-IN</h4>
+                  <p style="font-size: 8px; color: #9ca3af; margin-top: 2px;">Use Fitmaniac App at the gate</p>
+                </div>
+
+                <!-- Stylized Barcode -->
+                <div style="background: #ffffff; padding: 6px 12px; border-radius: 6px; display: flex; flex-direction: column; align-items: center;">
+                  <div style="display: flex; gap: 2px; height: 40px; align-items: center;">
+                    <div style="width: 2px; height: 100%; background: #000;"></div>
+                    <div style="width: 1px; height: 100%; background: #000;"></div>
+                    <div style="width: 3px; height: 100%; background: #000;"></div>
+                    <div style="width: 1px; height: 100%; background: #000;"></div>
+                    <div style="width: 2px; height: 100%; background: #000;"></div>
+                    <div style="width: 3px; height: 100%; background: #000;"></div>
+                    <div style="width: 1px; height: 100%; background: #000;"></div>
+                    <div style="width: 2px; height: 100%; background: #000;"></div>
+                  </div>
+                  <span id="poster-preview-token" style="font-size: 8px; color: #111827; font-weight: bold; font-family: monospace; margin-top: 4px;">FITFREAK_001</span>
+                </div>
+
+                <div>
+                  <h4 id="poster-preview-gymname" style="font-size: 9px; color: #fff; font-weight: bold; margin: 0;">Fitmaniac Center Koramangala</h4>
+                  <p id="poster-preview-location" style="font-size: 7px; color: #9ca3af; margin: 0;">100 Feet Road, Koramangala, Bangalore</p>
+                </div>
+
+                <div style="font-size: 6px; color: #38ef7d; font-weight: bold;">
+                  ⚡ Entrance gate opens instantly on scan
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: GATE SCANNER TERMINAL -->
+        <div id="client-content-gate" style="display: none;">
+          <div class="glass-card" style="text-align: center; padding: 15px;">
+            <h3 style="font-size: 15px; margin-bottom: 8px;">🚪 Entrance Gate Scanner Terminal</h3>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 14px;">
+              Live gate check-in terminal. Scan athlete's Dynamic Security QR Code under the reader.
+            </p>
+
+            <!-- Simulated Terminal Screen -->
+            <div id="terminal-screen" style="
+              width: 100%;
+              min-height: 160px;
+              background: #060b13;
+              border: 2px solid var(--accent-cyan);
+              border-radius: 10px;
+              padding: 15px;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              position: relative;
+              overflow: hidden;
+              margin-bottom: 15px;
+              transition: all 0.3s ease;
+            ">
+              <div id="terminal-status-indicator" style="font-size: 11px; font-weight: bold; color: var(--accent-pink); margin-bottom: 10px;">
+                ● GATE CLOSED / LOCKED
+              </div>
+              
+              <div id="terminal-display-content" style="text-align: center;">
+                <span style="font-size: 36px; display: block; margin-bottom: 8px;">🔒</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Awaiting Scan...</span>
+              </div>
+            </div>
+
+            <!-- Scanner controls -->
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <button class="btn btn-primary" onclick="simulateGateScan()" style="flex: 2;">
+                📷 Scan Phone Dynamic QR
+              </button>
+              <button class="btn btn-secondary" onclick="resetGateScanner()" style="flex: 1;">
+                🔄 Reset
+              </button>
+            </div>
+
+            <!-- Interactive Analytics SVG Ring Chart -->
+            <div class="glass-card" style="margin-top: 15px; display: flex; align-items: center; justify-content: space-around; padding: 12px; margin-bottom: 0;">
+              <div style="text-align: left;">
+                <h3 style="font-size: 10px; font-weight: bold; color: var(--text-bright); text-transform: uppercase; margin-bottom: 8px;">📊 Live Pass Share</h3>
+                <div style="font-size: 9px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+                  <span><span style="color:var(--accent-cyan);">●</span> Yearly (<span id="chart-yearly-count">1</span>)</span>
+                  <span><span style="color:var(--accent-yellow);">●</span> Quarterly (0)</span>
+                  <span><span style="color:var(--accent-pink);">●</span> Monthly (<span id="chart-monthly-count">1</span>)</span>
+                </div>
+              </div>
+              <svg width="60" height="60" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+                <circle cx="18" cy="18" r="15.915" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3" />
+                <circle id="ring-yearly" cx="18" cy="18" r="15.915" fill="none" stroke="var(--accent-cyan)" stroke-width="3.2" stroke-dasharray="50 100" stroke-dashoffset="0" />
+                <circle id="ring-monthly" cx="18" cy="18" r="15.915" fill="none" stroke="var(--accent-pink)" stroke-width="3.2" stroke-dasharray="50 100" stroke-dashoffset="-50" />
+              </svg>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. CUSTOMER MOBILE APPLICATION -->
+    <div class="portal-column" style="padding: 10px; background: transparent; border: none; box-shadow: none;">
+      
+      <div class="phone-container">
+        <div class="phone-notch"></div>
+        
+        <!-- Scrollable Phone viewport -->
+        <div class="phone-body" id="phone-content">
+          <!-- Render phone viewport inside here (Login vs Workout vs Community tab views) -->
+        </div>
+
+        <!-- Simulated Phone UPI Modal Overlay -->
+        <div id="phone-upi-modal" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 11, 19, 0.96); z-index: 100; padding: 20px; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: 'Inter', sans-serif;">
+          <h3 style="font-size: 16px; font-family: 'Outfit'; color: var(--text-bright); margin-bottom: 5px;">⚡ Fitmaniac UPI Instant Pay</h3>
+          <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 15px;">Scan dynamic QR code below to renew membership instantly.</p>
+          
+          <div style="background: white; padding: 8px; border-radius: 12px; margin-bottom: 12px; width: 120px; height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px dashed #000;">
+            <span style="font-size: 32px;">📱</span>
+            <span style="font-size: 9px; color: #000; font-weight: bold; margin-top: 4px;">UPI: pay@fitmaniac</span>
+          </div>
+          
+          <div style="font-size: 18px; font-weight: bold; color: var(--accent-green); margin-bottom: 2px;" id="phone-upi-amount">₹12,999</div>
+          <div style="font-size: 8px; color: var(--text-muted); margin-bottom: 18px;" id="phone-upi-ref">Ref ID: SU-UPI-XXXXXX</div>
+          
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <button class="btn btn-secondary" style="flex: 1; padding: 8px; font-size: 11px;" onclick="closePhoneUpiModal()">Cancel</button>
+            <button class="btn btn-primary" style="flex: 1.5; padding: 8px; font-size: 11px; background: linear-gradient(135deg, var(--accent-green) 0%, #11998e 100%); color: #000;" onclick="completePhoneUpiPayment()">Verify Pay</button>
+          </div>
+        </div>
+
+        <!-- Simulated Phone Milestones Modal Overlay -->
+        <div id="phone-milestones-modal" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 11, 19, 0.96); z-index: 100; padding: 20px; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: 'Inter', sans-serif;">
+          <h3 style="font-size: 16px; font-family: 'Outfit'; color: var(--text-bright); margin-bottom: 5px;">🏆 Fitmaniac Streak Achievements</h3>
+          <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 15px;">Consistency beats intensity. Hit check-in milestones to unlock exclusive gate badges!</p>
+          
+          <div id="phone-milestones-list" style="width: 100%; display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 15px;">
+            <!-- Rendered dynamically -->
+          </div>
+          
+          <button class="btn btn-primary" onclick="claimStreakReward()" style="margin-bottom: 8px; background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%); color: #000;">Keep Crushing It!</button>
+        </div>
+
+        <!-- Phone tabs -->
+        <div class="phone-tabs" id="phone-nav" style="display: none;">
+          <div class="phone-tab-btn active" onclick="phoneChangeTab('workout', this)">🏋️ Workouts</div>
+          <div class="phone-tab-btn" onclick="phoneChangeTab('community', this)">💬 Forum</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- State Engine JavaScript -->
+  <script>
+    // ----------------------------------------------------
+    // NETWORK SIMULATOR & OFFLINE sync engine
+    // ----------------------------------------------------
+    let simulatorOfflineMode = false;
+    let simulatorOfflineQueue = [];
+
+    // Periodic background sync worker simulation
+    setInterval(() => {
+      if (!simulatorOfflineMode && simulatorOfflineQueue.length > 0) {
+        const task = simulatorOfflineQueue.shift();
+        task.execute();
+        updateSimulatorQueueBadges();
+      }
+    }, 1500);
+
+    function updateSimulatorQueueBadges() {
+      const adminBadge = document.getElementById('admin-offline-badge');
+      const clientBadge = document.getElementById('client-offline-badge');
+      const networkBtn = document.getElementById('simulator-network-btn');
+      const dot = document.getElementById('network-indicator-dot');
+      const label = document.getElementById('network-indicator-label');
+
+      if (simulatorOfflineMode) {
+        if (adminBadge) {
+          adminBadge.style.display = 'inline-block';
+          adminBadge.innerText = `Offline (${simulatorOfflineQueue.filter(t => t.panel === 'admin').length} queued)`;
+        }
+        if (clientBadge) {
+          clientBadge.style.display = 'inline-block';
+          clientBadge.innerText = `Offline (${simulatorOfflineQueue.filter(t => t.panel === 'client').length} queued)`;
+        }
+        if (networkBtn) {
+          networkBtn.style.borderColor = 'var(--accent-pink)';
+          networkBtn.style.background = 'rgba(255, 8, 68, 0.1)';
+        }
+        if (dot) {
+          dot.style.backgroundColor = 'var(--accent-pink)';
+          dot.style.boxShadow = '0 0 8px var(--accent-pink)';
+        }
+        if (label) label.innerText = 'Network: Offline';
+      } else {
+        if (adminBadge) {
+          if (simulatorOfflineQueue.filter(t => t.panel === 'admin').length > 0) {
+            adminBadge.style.display = 'inline-block';
+            adminBadge.innerText = `Syncing (${simulatorOfflineQueue.filter(t => t.panel === 'admin').length} left)`;
+          } else {
+            adminBadge.style.display = 'none';
+          }
+        }
+        if (clientBadge) {
+          if (simulatorOfflineQueue.filter(t => t.panel === 'client').length > 0) {
+            clientBadge.style.display = 'inline-block';
+            clientBadge.innerText = `Syncing (${simulatorOfflineQueue.filter(t => t.panel === 'client').length} left)`;
+          } else {
+            clientBadge.style.display = 'none';
+          }
+        }
+        if (networkBtn) {
+          networkBtn.style.borderColor = 'var(--accent-green)';
+          networkBtn.style.background = 'rgba(56, 239, 125, 0.1)';
+        }
+        if (dot) {
+          dot.style.backgroundColor = 'var(--accent-green)';
+          dot.style.boxShadow = '0 0 8px var(--accent-green)';
+        }
+        if (label) label.innerText = 'Network: Online';
+      }
+    }
+
+    function toggleSimulatorNetwork() {
+      simulatorOfflineMode = !simulatorOfflineMode;
+      updateSimulatorQueueBadges();
+    }
+
+    // ----------------------------------------------------
+    // IN-MEMORY DATA STATE MODEL (LOCAL SEEDS TRANSLATED FOR INDIA)
+    // ----------------------------------------------------
+    let gyms = [
+      {
+        id: 'gym-777',
+        name: 'Fitmaniac Center Koramangala',
+        location: '100 Feet Road, Koramangala, Bangalore',
+        barcodeToken: 'fitfreak_001',
+        operatingHours: { open: '05:30', close: '22:30' },
+        capacityPerSlot: 25,
+        paymentMethodsConfig: { allowOnline: true, allowOffline: true }
+      }
+    ];
+
+    let customers = [
+      {
+        id: 'cust-101',
+        gymId: 'gym-777',
+        name: 'Rahul Sharma',
+        email: 'rahul@gmail.com',
+        phone: '+91 98765 43210',
+        subscription: {
+          planType: 'Yearly',
+          startDate: new Date(Date.now() - 5*24*60*60*1000),
+          endDate: new Date(Date.now() + 360*24*60*60*1000),
+          status: 'Active',
+          paymentMethod: 'Online'
+        },
+        carryForwardDays: 5,
+        selectedWorkoutSlot: { start: '06:00 AM', end: '08:00 AM' }
+      },
+      {
+        id: 'cust-102',
+        gymId: 'gym-777',
+        name: 'Priya Patel',
+        email: 'priya@gmail.com',
+        phone: '+91 98765 43211',
+        subscription: {
+          planType: 'Monthly',
+          startDate: new Date(Date.now() - 35*24*60*60*1000),
+          endDate: new Date(Date.now() - 5*24*60*60*1000),
+          status: 'Expired',
+          paymentMethod: 'Offline'
+        },
+        carryForwardDays: 0,
+        selectedWorkoutSlot: { start: '18:00 PM', end: '20:00 PM' }
+      }
+    ];
+
+    let checkIns = [];
+    let forumPosts = [
+      {
+        id: 'p1',
+        gymId: 'gym-777',
+        customerName: 'Rahul Sharma',
+        title: '🏋️ Bench spotter needed at 6:30 AM tomorrow?',
+        content: 'Planning to hit heavy strength & conditioning tomorrow morning. Looking for a workout buddy in Koramangala to spot each other on bench press and deadlifts!',
+        likes: 5,
+        isPinned: false,
+        comments: [
+          { name: 'Priya Patel', text: 'Count me in Rahul! Let’s crush the HIIT circuit.' }
+        ]
+      }
+    ];
+
+    let specialClasses = [
+      { id: 'sc-1', gymId: 'gym-777', title: 'PRO Zumba Masterclass', trainer: "Sarah D'Souza", time: 'Tomorrow 09:00 AM', enrolled: false, spots: '4 spots left' },
+      { id: 'sc-2', gymId: 'gym-777', title: 'HRX Strength & Conditioning', trainer: 'Coach Shayan', time: 'Thursday 06:00 PM', enrolled: false, spots: '1 spot left' },
+      { id: 'sc-3', gymId: 'gym-777', title: 'Yoga Masterclass: Breathwork', trainer: 'Acharya Dev', time: 'Friday 07:00 AM', enrolled: false, spots: '8 spots left' }
+    ];
+
+    let challenges = [
+      {
+        id: 'ch-1',
+        gymId: 'gym-777',
+        title: '🔥 CHALLENGE: HRX 15-Min S&C Circuit',
+        description: 'Target: 3 Rounds for Time (Squats, Bench Press, Kettlebell swings)',
+        isActive: true,
+        leaderboard: [
+          { customerId: 'cust-102', customerName: 'Marcus Dutt', timeString: '12:45', seconds: 765 },
+          { customerId: 'cust-101', customerName: 'Rahul Sharma (You)', timeString: '13:12', seconds: 792 },
+          { customerId: 'cust-103', customerName: 'Priya Patel', timeString: '14:05', seconds: 845 }
+        ]
+      }
+    ];
+
+    const AVAILABLE_SLOTS = [
+      { start: '06:00 AM', end: '08:00 AM', range: '06:00 AM - 08:00 AM', status: 'Optimal', fill: 0.25, color: '#38ef7d' },
+      { start: '08:00 AM', end: '10:00 AM', range: '08:00 AM - 10:00 AM', status: 'Moderate', fill: 0.55, color: '#f6d365' },
+      { start: '10:00 AM', end: '12:00 PM', range: '10:00 AM - 12:00 PM', status: 'Less Crowd', fill: 0.15, color: '#38ef7d' },
+      { start: '04:00 PM', end: '06:00 PM', range: '04:00 PM - 06:00 PM', status: 'Peak Crowd', fill: 0.88, color: '#ff0844' },
+      { start: '06:00 PM', end: '08:00 PM', range: '06:00 PM - 08:00 PM', status: 'Peak Crowd', fill: 0.95, color: '#ff0844' },
+      { start: '08:00 PM', end: '10:00 PM', range: '08:00 PM - 10:00 PM', status: 'Moderate', fill: 0.48, color: '#f6d365' }
+    ];
+
+    // Phone application layout variables
+    let selectedClientGymId = 'gym-777';
+    let loggedInCustomer = null; // Rahul Sharma after login
+    let phoneTab = 'workout'; 
+    let phoneScanType = 'Check-In'; 
+    let isScanActive = false;
+    let workoutStreak = 4;
+    let phoneForumSubTab = 'bulletin';
+    let phoneQrTimeLeft = 30;
+    let phoneQrTokenSuffix = Math.floor(10000 + Math.random() * 90000);
+    let phoneLiveChatMessages = [
+      { name: 'Priya Patel', text: 'Hey guys, who is hitting the gym at 6 PM today?', time: '07:08 AM' },
+      { name: 'Marcus Dutt', text: 'I am planning to hit it at 6 PM! Zumba class afterwards?', time: '07:09 AM' },
+      { name: 'Rahul Sharma', text: 'Zumba with Coach Sarah is always a blast. Count me in!', time: '07:11 AM' }
+    ];
+
+    // ----------------------------------------------------
+    // INITIALIZATION
+    // ----------------------------------------------------
+    window.onload = function() {
+      renderAdminPanel();
+      renderClientSelectors();
+      clientChangeTab('members');
+      renderPhoneGateway();
+      renderCharts();
+
+      // Start Dynamic Security QR rotation loop
+      setInterval(() => {
+        if (isScanActive && loggedInCustomer) {
+          phoneQrTimeLeft--;
+          if (phoneQrTimeLeft <= 0) {
+            phoneQrTimeLeft = 30;
+            phoneQrTokenSuffix = Math.floor(10000 + Math.random() * 90000);
+          }
+          const timerSpan = document.getElementById('phone-qr-timer');
+          if (timerSpan) timerSpan.innerText = phoneQrTimeLeft;
+          const tokenSpan = document.getElementById('phone-qr-token-val');
+          if (tokenSpan) {
+            const gym = gyms.find(g => g.id === loggedInCustomer.gymId) || gyms[0];
+            const baseToken = (gym.barcodeToken || 'fitfreak_001').toUpperCase();
+            tokenSpan.innerText = `${baseToken}_${phoneQrTokenSuffix}`;
+          }
+        }
+      }, 1000);
+
+      // Load Theme
+      if (localStorage.getItem('simulator-theme') === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('global-theme-btn').innerHTML = '🌙';
+      }
+    };
+
+    // ----------------------------------------------------
+    // 🛡️ SUPER ADMIN CONTROLLERS
+    // ----------------------------------------------------
+    function renderAdminPanel() {
+      document.getElementById('admin-gym-count').innerText = gyms.length;
+      document.getElementById('admin-member-count').innerText = customers.length;
+
+      const listDiv = document.getElementById('admin-gym-list');
+      listDiv.innerHTML = '';
+
+      gyms.forEach(gym => {
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
+            <div>
+              <h4 style="font-size:15px; color:var(--text-bright);">${gym.name}</h4>
+              <span style="font-size:11px; color:var(--text-muted);">📍 ${gym.location}</span>
+            </div>
+            <button class="btn btn-danger" style="width:auto; padding:4px 8px; font-size:10px;" onclick="adminDeleteGym('${gym.id}')">Delete</button>
+          </div>
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:8px; font-size:11px; color:var(--text-muted);">
+            <div>Barcode Token: <strong style="color:var(--accent-cyan);">${gym.barcodeToken}</strong></div>
+            <div>Hours: <strong>${gym.operatingHours.open} - ${gym.operatingHours.close} IST</strong></div>
+          </div>
+        `;
+        listDiv.appendChild(card);
+      });
+    }
+
+    function adminAddGym(e) {
+      e.preventDefault();
+      const name = document.getElementById('gym-name').value;
+      const loc = document.getElementById('gym-loc').value;
+      const barcode = document.getElementById('gym-barcode').value;
+      const id = 'gym-' + Date.now();
+
+      const executeAdd = () => {
+        gyms.push({
+          id,
+          name,
+          location: loc,
+          barcodeToken: barcode,
+          operatingHours: { open: '05:30', close: '22:30' },
+          capacityPerSlot: 20,
+          paymentMethodsConfig: { allowOnline: true, allowOffline: true }
+        });
+        renderAdminPanel();
+        renderClientSelectors();
+      };
+
+      document.getElementById('gym-name').value = '';
+      document.getElementById('gym-loc').value = '';
+      document.getElementById('gym-barcode').value = '';
+
+      if (simulatorOfflineMode) {
+        simulatorOfflineQueue.push({
+          panel: 'admin',
+          execute: executeAdd
+        });
+        updateSimulatorQueueBadges();
+      } else {
+        executeAdd();
+      }
+      
+      alert(`Registered Partner Gym: ${name}! Added to Network.`);
+    }
+
+    function adminDeleteGym(id) {
+      if (!confirm('Are you sure you want to remove this partner from the network?')) return;
+      gyms = gyms.filter(g => g.id !== id);
+      renderAdminPanel();
+      renderClientSelectors();
+    }
+
+    // ----------------------------------------------------
+    // 🏢 GYM CLIENT PORTALS CONTROLLERS
+    // ----------------------------------------------------
+    function renderClientSelectors() {
+      const sel = document.getElementById('client-gym-selector');
+      sel.innerHTML = '';
+      gyms.forEach(gym => {
+        const opt = document.createElement('option');
+        opt.value = gym.id;
+        opt.innerText = gym.name;
+        if (gym.id === selectedClientGymId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function clientSelectGym(val) {
+      selectedClientGymId = val;
+      renderClientCustomers();
+      renderClientAttendance();
+    }
+
+    function renderClientCustomers() {
+      const listDiv = document.getElementById('client-customer-list');
+      listDiv.innerHTML = '';
+
+      const filtered = customers.filter(c => c.gymId === selectedClientGymId);
+
+      if (filtered.length === 0) {
+        listDiv.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:15px;">No active athletes registered under this center.</div>`;
+        return;
+      }
+
+      filtered.forEach(cust => {
+        const isActive = cust.subscription.status === 'Active' && new Date(cust.subscription.endDate) > new Date();
+        const priceText = cust.subscription.planType === 'Yearly' ? '₹12,999' : cust.subscription.planType === 'Quarterly' ? '₹3,999' : '₹1,499';
+        
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="font-size:14px;">${cust.name} <span class="badge ${isActive ? 'badge-green' : 'badge-pink'}">${cust.subscription.status}</span></h4>
+              <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">Email: ${cust.email} | Plan: ${cust.subscription.planType} (${priceText}) | Carry-forward: <strong style="color:var(--accent-cyan);">${cust.carryForwardDays || 0} days</strong></p>
+              <span style="font-size:11px; color:var(--accent-yellow);">Expiry Date: ${new Date(cust.subscription.endDate).toLocaleDateString()}</span>
+            </div>
+            <div>
+              ${!isActive ? `<button class="btn btn-primary" style="padding:4px 8px; font-size:10px;" onclick="clientRenewOffline('${cust.id}')">💵 Approve UPI / Cash</button>` : `<span style="font-size:10px; color:var(--accent-green); font-weight:bold;">✓ Active Member</span>`}
+            </div>
+          </div>
+        `;
+        listDiv.appendChild(card);
+      });
+    }
+
+    function clientAddCustomer(e) {
+      e.preventDefault();
+      const name = document.getElementById('member-name').value;
+      const email = document.getElementById('member-email').value;
+      const plan = document.getElementById('member-plan').value;
+      const payment = document.getElementById('member-payment').value;
+      const customPriceInput = document.getElementById('member-price').value;
+      const id = 'cust-' + Date.now();
+
+      const daysToAdd = plan === 'Yearly' ? 360 : plan === 'Quarterly' ? 90 : 30;
+      const defaultPrice = plan === 'Yearly' ? 12999 : plan === 'Quarterly' ? 3999 : 1499;
+      const price = parseFloat(customPriceInput) || defaultPrice;
+
+      const carryInput = document.getElementById('member-carryforward');
+      const carryDays = plan === 'Yearly' ? Math.min(30, Math.max(0, parseInt(carryInput.value) || 0)) : 0;
+
+      const executeAddCustomer = () => {
+        customers.push({
+          id,
+          gymId: selectedClientGymId,
+          name,
+          email,
+          phone: '+91 98765 43210',
+          subscription: {
+            planType: plan,
+            startDate: new Date(),
+            endDate: new Date(Date.now() + daysToAdd*24*60*60*1000),
+            status: 'Active',
+            paymentMethod: payment,
+            pricePaid: price
+          },
+          carryForwardDays: carryDays,
+          selectedWorkoutSlot: { start: '08:00 AM', end: '10:00 AM' }
+        });
+        renderClientCustomers();
+        renderAdminPanel();
+        renderCharts();
+      };
+
+      document.getElementById('add-member-form').reset();
+      document.getElementById('member-price').value = "1499"; // Reset preset
+      document.getElementById('member-carryforward').value = 0;
+      document.getElementById('member-carryforward').disabled = true;
+
+      if (simulatorOfflineMode) {
+        simulatorOfflineQueue.push({
+          panel: 'client',
+          execute: executeAddCustomer
+        });
+        updateSimulatorQueueBadges();
+      } else {
+        executeAddCustomer();
+      }
+    }
+
+    function clientRenewOffline(id) {
+      const cust = customers.find(c => c.id === id);
+      if (!cust) return;
+      const defaultPrice = cust.subscription.planType === 'Yearly' ? 12999 : cust.subscription.planType === 'Quarterly' ? 3999 : 1499;
+      const customPriceInput = window.prompt(`Renewing subscription for ${cust.name} (${cust.subscription.planType}).\n\nEnter subscription rate in ₹:`, defaultPrice);
+      if (customPriceInput === null) return;
+      const price = parseFloat(customPriceInput) || 0;
+
+      let carryForwardDays = 0;
+      if (cust.subscription.planType === 'Yearly') {
+        const carryInput = window.prompt(`Enter carry-forward days to assign (Max 30):`, '0');
+        if (carryInput !== null) {
+          carryForwardDays = Math.min(30, Math.max(0, parseInt(carryInput) || 0));
+        }
+      }
+
+      const executeRenew = () => {
+        customers.forEach(c => {
+          if (c.id === id) {
+            c.subscription.status = 'Active';
+            c.subscription.startDate = new Date();
+            c.subscription.pricePaid = price;
+            const months = c.subscription.planType === 'Yearly' ? 12 : c.subscription.planType === 'Quarterly' ? 3 : 1;
+            const next = new Date();
+            next.setMonth(next.getMonth() + months);
+            c.subscription.endDate = next;
+            c.carryForwardDays = carryForwardDays;
+          }
+        });
+        renderClientCustomers();
+        renderCharts();
+      };
+
+      if (simulatorOfflineMode) {
+        simulatorOfflineQueue.push({
+          panel: 'client',
+          execute: executeRenew
+        });
+        updateSimulatorQueueBadges();
+      } else {
+        executeRenew();
+      }
+    }
+
+    function adminExportExcel() {
+      const headers = [
+        'Gym Name',
+        'Location Address',
+        'Barcode Token',
+        'Operating Hours',
+        'Hourly Capacity',
+        'Direct Online Pay',
+        'Offline Cash',
+        'Registration Date'
+      ];
+
+      const rows = gyms.map(gym => [
+        `"${(gym.name || '').replace(/"/g, '""')}"`,
+        `"${(gym.location || '').replace(/"/g, '""')}"`,
+        `"${(gym.barcodeToken || '').replace(/"/g, '""')}"`,
+        `"${gym.operatingHours?.open || '05:30'} - ${gym.operatingHours?.close || '22:30'} IST"`,
+        gym.capacityPerSlot || 25,
+        gym.paymentMethodsConfig?.allowOnline ? 'Yes' : 'No',
+        gym.paymentMethodsConfig?.allowOffline ? 'Yes' : 'No',
+        new Date().toLocaleDateString()
+      ]);
+
+      const csvRows = [headers.join(','), ...rows.map(row => row.join(','))];
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Gym_Partner_Monthly_Report_${new Date().getMonth() + 1}_${new Date().getFullYear()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function clientExportExcel() {
+      const headers = [
+        'Athlete Name',
+        'Email Address',
+        'Contact Phone',
+        'Subscription Plan',
+        'Price Paid (INR)',
+        'Payment Method',
+        'Status',
+        'Carry-Forward Days',
+        'Slot Timing',
+        'Start Date',
+        'Expiry Date'
+      ];
+
+      const filtered = customers.filter(c => c.gymId === selectedClientGymId);
+      if (filtered.length === 0) {
+        alert("No athletes to export for this gym location.");
+        return;
+      }
+
+      const rows = filtered.map(cust => {
+        const defaultPrice = cust.subscription.planType === 'Yearly' ? 12999 : cust.subscription.planType === 'Quarterly' ? 3999 : 1499;
+        const pricePaid = cust.subscription.pricePaid || defaultPrice;
+        return [
+          `"${(cust.name || '').replace(/"/g, '""')}"`,
+          `"${(cust.email || '').replace(/"/g, '""')}"`,
+          `"${(cust.phone || '').replace(/"/g, '""')}"`,
+          `"${cust.subscription?.planType || 'Monthly'}"`,
+          pricePaid,
+          `"${cust.subscription?.paymentMethod || 'Offline'}"`,
+          `"${cust.subscription?.status || 'Active'}"`,
+          cust.carryForwardDays || 0,
+          `"${cust.selectedWorkoutSlot?.start || '08:00 AM'} - ${cust.selectedWorkoutSlot?.end || '10:00 AM'}"`,
+          new Date(cust.subscription?.startDate || Date.now()).toLocaleDateString(),
+          new Date(cust.subscription?.endDate || Date.now()).toLocaleDateString()
+        ];
+      });
+
+      const csvRows = [headers.join(','), ...rows.map(row => row.join(','))];
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Athlete_Members_Monthly_Report_${new Date().getMonth() + 1}_${new Date().getFullYear()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function renderClientAttendance() {
+      const list = document.getElementById('client-attendance-list');
+      list.innerHTML = '';
+
+      const filtered = checkIns.filter(log => log.gymId === selectedClientGymId);
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:10px;">No scan logs checked in for today.</div>`;
+        return;
+      }
+
+      filtered.forEach(log => {
+        const item = document.createElement('div');
+        item.style.fontSize = '11px';
+        item.style.padding = '4px 0';
+        item.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+        item.innerHTML = `
+          ⏰ <strong>${log.timeString} IST</strong>: 
+          Athlete <strong style="color:var(--accent-cyan);">${log.name}</strong> 
+          ${log.type === 'In' ? '🟢 Checked-In' : `🔴 Checked-Out (Duration: <strong>${log.duration} min</strong>)`}
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // ----------------------------------------------------
+    // 📱 CLIENT CUSTOMER MOBILE VIEW CONTROLLERS
+    // ----------------------------------------------------
+    function renderPhoneGateway() {
+      const body = document.getElementById('phone-content');
+      document.getElementById('phone-nav').style.display = 'none';
+      
+      body.innerHTML = `
+        <div style="padding: 20px 10px; text-align: center; height: 100%; display:flex; flex-direction:column; justify-content:center;">
+          
+          <div style="font-size: 50px; margin-bottom: 10px;">🏋️</div>
+          <h2 style="font-size: 20px; font-family:'Outfit';">FITMANIAC APP</h2>
+          <p style="font-size: 11px; color:var(--text-muted); margin-bottom: 25px;">Magic Passwordless OTP Login</p>
+
+          <div style="background:rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius:12px; padding:15px; text-align:left;">
+            <label style="font-size:10px; color:var(--text-muted); font-weight:bold; display:block; margin-bottom:5px;">REGISTERED EMAIL</label>
+            <input type="email" id="phone-email-input" class="form-input" style="margin-bottom:10px;" placeholder="e.g. rahul@gmail.com" value="rahul@gmail.com">
+            <span style="font-size:9px; color:var(--text-muted); display:block; margin-bottom:15px;">Registered by Gym Owner</span>
+            
+            <button class="btn btn-primary" onclick="phoneTriggerOtpRequest()">🚀 Send Magic OTP</button>
+            
+            <div style="text-align:center; margin:12px 0; font-size:10px; color:var(--text-muted);">OR</div>
+            
+            <button class="btn btn-secondary" style="border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="phoneOneClickBypass()">💡 One-Click Indian Demo Bypass</button>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function phoneOneClickBypass() {
+      loggedInCustomer = customers.find(c => c.email === 'rahul@gmail.com');
+      document.getElementById('phone-nav').style.display = 'flex';
+      phoneChangeTab('workout', document.querySelector('.phone-tab-btn'));
+    }
+
+    function phoneTriggerOtpRequest() {
+      const email = document.getElementById('phone-email-input').value.trim().toLowerCase();
+      const user = customers.find(c => c.email === email);
+
+      if (!user) {
+        alert('Email not registered under any Indian partner gym. Please ask your gym desk owner to register you!');
+        return;
+      }
+
+      loggedInCustomer = user;
+      
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      
+      const body = document.getElementById('phone-content');
+      body.innerHTML = `
+        <div style="padding: 20px 10px; height: 100%; display:flex; flex-direction:column; justify-content:center; text-align:center;">
+          <h2 style="font-size: 20px;">Verify OTP Access</h2>
+          <p style="font-size: 11px; color:var(--text-muted); margin-bottom: 20px;">Verification code sent to ${email}</p>
+
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:12px; padding:15px; text-align:left;">
+            <label style="font-size:10px; color:var(--text-muted); font-weight:bold; display:block; margin-bottom:5px;">4-DIGIT VERIFICATION CODE</label>
+            <input type="text" id="phone-otp-input" class="form-input" style="text-align:center; letter-spacing:10px; font-weight:bold; font-size:18px; margin-bottom:15px;" placeholder="0000" maxlength="4">
+            
+            <button class="btn btn-primary" onclick="phoneVerifyOtp('${otp}')">🔑 Verify & Sign In</button>
+          </div>
+          
+          <span style="font-size:11px; color:var(--accent-yellow); margin-top:20px;">[India Preview] Verification OTP is: <strong>${otp}</strong></span>
+        </div>
+      `;
+    }
+
+    function phoneVerifyOtp(otp) {
+      const entered = document.getElementById('phone-otp-input').value;
+      if (entered === otp || entered === '1234') {
+        document.getElementById('phone-nav').style.display = 'flex';
+        phoneChangeTab('workout', document.querySelector('.phone-tab-btn'));
+      } else {
+        alert('Invalid or expired OTP code. Please retry.');
+      }
+    }
+
+    function phoneChangeTab(tab, btn) {
+      phoneTab = tab;
+      
+      document.querySelectorAll('.phone-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const body = document.getElementById('phone-content');
+      
+      if (tab === 'workout') {
+        renderPhoneWorkoutTab(body);
+      } else {
+        renderPhoneForumTab(body);
+      }
+    }
+
+    function renderPhoneWorkoutTab(body) {
+      const gym = gyms.find(g => g.id === loggedInCustomer.gymId) || gyms[0];
+      const isActive = loggedInCustomer.subscription.status === 'Active' && new Date(loggedInCustomer.subscription.endDate) > new Date();
+      const isExpiring = loggedInCustomer.subscription.endDate && (new Date(loggedInCustomer.subscription.endDate) - new Date() < 5*24*60*60*1000);
+
+      body.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid var(--border-glass); padding-bottom:10px;">
+          <div>
+            <span style="font-size:8px; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;">${gym.name.toUpperCase()}</span>
+            <h3 style="font-size:16px;">${loggedInCustomer.name}</h3>
+          </div>
+          <div style="text-align:right;">
+            <span class="badge badge-cyan" style="font-size:8px;">${loggedInCustomer.subscription.planType.toUpperCase()} PASS</span>
+            <span style="font-size:9px; color:var(--accent-pink); font-weight:bold; display:block; margin-top:2px; cursor:pointer;" onclick="renderPhoneGateway()">Sign Out</span>
+          </div>
+        </div>
+
+        ${isExpiring ? `
+          <div style="background:rgba(246, 211, 101, 0.08); border:1px solid var(--accent-yellow); border-radius:10px; padding:10px; margin-bottom:15px;">
+            <div style="font-size:10px; font-weight:bold; color:var(--accent-yellow);">⚠️ FITMANIAC PASS EXPIRING SOON!</div>
+            <div style="font-size:9px; color:var(--text-muted); margin-top:4px; line-height:13px;">
+              Your Pass is expiring on ${new Date(loggedInCustomer.subscription.endDate).toLocaleDateString()}. Renew now to roll over your unused ${loggedInCustomer.carryForwardDays} absent days!
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 8px;">
+              <button class="btn btn-primary" style="padding: 4px 8px; font-size: 9px; width: auto; border-radius: 4px; background: var(--accent-green); color: #000;" onclick="openPhoneUpiModal(${loggedInCustomer.subscription.planType === 'Yearly' ? 12999 : loggedInCustomer.subscription.planType === 'Quarterly' ? 3999 : 1499})">⚡ PAY INSTANT UPI</button>
+              <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 9px; width: auto; border-radius: 4px;" onclick="alert('Desk Cash Payment 💵\\n\\nPlease pay UPI or Cash directly to the receptionist at Fitmaniac Center Koramangala.')">DESK CASH</button>
+            </div>
+          </div>
+        ` : ''}
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:10px; padding:10px; margin-bottom:15px; display:flex; justify-content:space-around; align-items:center;">
+          <div style="text-align:center; cursor:pointer;" onclick="openPhoneMilestonesModal()">
+            <div style="font-size:14px; font-weight:bold; color:var(--accent-pink);">${workoutStreak} Days</div>
+            <div style="font-size:8px; color:var(--text-muted);">Streak 🔥</div>
+          </div>
+          <div style="width:1px; height:20px; background:var(--border-glass);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:14px; font-weight:bold; color:var(--accent-cyan);">${loggedInCustomer.carryForwardDays} days</div>
+            <div style="font-size:8px; color:var(--text-muted);">Unused Days</div>
+          </div>
+          <div style="width:1px; height:20px; background:var(--border-glass);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:14px; font-weight:bold; color:var(--accent-green);">92 min</div>
+            <div style="font-size:8px; color:var(--text-muted);">Avg Workout</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:10px; padding:10px; margin-bottom:15px;">
+          <div style="font-size: 9px; font-weight: bold; color: var(--text-bright); margin-bottom: 8px;">🏆 Earned Streak Badges</div>
+          <div style="display: flex; gap: 12px;">
+            <div style="text-align: center; opacity: ${workoutStreak >= 5 ? '1' : '0.25'};">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(246, 211, 101, 0.15); border: 1px solid #f6d365; display: flex; justify-content: center; align-items: center;">
+                <span style="font-size: 14px;">🥉</span>
+              </div>
+              <span style="font-size: 7px; color: var(--text-muted); display: block; margin-top: 3px;">Bronze</span>
+            </div>
+            <div style="text-align: center; opacity: ${workoutStreak >= 10 ? '1' : '0.25'};">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(229, 231, 235, 0.15); border: 1px solid #e5e7eb; display: flex; justify-content: center; align-items: center;">
+                <span style="font-size: 14px;">🥈</span>
+              </div>
+              <span style="font-size: 7px; color: var(--text-muted); display: block; margin-top: 3px;">Silver</span>
+            </div>
+            <div style="text-align: center; opacity: ${workoutStreak >= 30 ? '1' : '0.25'};">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 242, 254, 0.15); border: 1px solid #00f2fe; display: flex; justify-content: center; align-items: center;">
+                <span style="font-size: 14px;">🥇</span>
+              </div>
+              <span style="font-size: 7px; color: var(--text-muted); display: block; margin-top: 3px;">Gold</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: -10px; margin-bottom: 15px; padding: 6px 10px; background: var(--bg-subtle); border: 1px dashed var(--border-glass); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor:pointer;" onclick="openPhoneMilestonesModal()">
+          <span style="font-size: 8px; color: var(--text-muted);">🏆 Streak Milestone: <strong style="color: var(--accent-green);">${workoutStreak >= 30 ? 'Gold Legend' : workoutStreak >= 10 ? 'Silver Elite' : 'Bronze Level'} (${workoutStreak}/${workoutStreak >= 30 ? '30' : workoutStreak >= 10 ? '10' : '5'} days)</strong></span>
+          <span style="font-size: 8px; color: var(--accent-cyan); font-weight: bold;">View Badges ➔</span>
+        </div>
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:12px; margin-bottom:15px;">
+          <h4 style="font-size:12px; margin-bottom:4px;">Dynamic Entrance Pass</h4>
+          <p style="font-size:10px; color:var(--text-muted); margin-bottom:10px;">Show this secure QR code at the entrance gate reader.</p>
+          
+          ${isScanActive ? `
+            <div style="background:#ffffff; padding:12px; border-radius:12px; text-align:center; margin-bottom:10px; display:flex; flex-direction:column; align-items:center;">
+              <div style="width:80px; height:80px; border:2px solid var(--accent-cyan); border-radius:8px; display:flex; justify-content:center; align-items:center; position:relative; overflow:hidden; background:#000;">
+                <span style="font-size:32px; display:inline-block; animation: spin 4s linear infinite;">🌀</span>
+              </div>
+              <span id="phone-qr-token-val" style="font-size:9px; color:#111827; font-weight:bold; font-family:monospace; margin-top:8px;">${(gyms.find(g => g.id === loggedInCustomer.gymId) || gyms[0]).barcodeToken.toUpperCase()}_${phoneQrTokenSuffix}</span>
+              <span style="font-size:8px; color:var(--text-muted); margin-top:4px;">Regenerating in <strong id="phone-qr-timer" style="color:var(--accent-pink);">${phoneQrTimeLeft}</strong>s</span>
+            </div>
+            <button class="btn btn-secondary" onclick="isScanActive = false; renderPhoneWorkoutTab(document.getElementById('phone-content'));">Hide Pass</button>
+          ` : `
+            <button class="btn btn-primary" style="${phoneScanType === 'Check-Out' ? 'background:linear-gradient(135deg, var(--accent-pink) 0%, #b20a2c 100%); color:white;' : ''}" onclick="phoneOpenScanModal()">
+              📷 ${phoneScanType === 'Check-In' ? 'SHOW ENTRANCE QR PASS' : 'SHOW EXIT QR PASS'}
+            </button>
+          `}
+        </div>
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:12px; margin-bottom:15px;">
+          <h4 style="font-size:12px; margin-bottom:4px;">Flexible workout slot</h4>
+          <p style="font-size:9px; color:var(--text-muted); margin-bottom:10px;">Choose a workout window. Selected: <strong style="color:var(--accent-yellow);">${loggedInCustomer.selectedWorkoutSlot.start} - ${loggedInCustomer.selectedWorkoutSlot.end}</strong></p>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:140px; overflow-y:auto; padding-right:4px;">
+            ${AVAILABLE_SLOTS.map(slot => {
+              const isSel = loggedInCustomer.selectedWorkoutSlot.start === slot.start;
+              return `
+                <div class="glass-card" style="padding:6px; margin:0; cursor:pointer; text-align:center; ${isSel ? 'border-color:var(--accent-cyan); background:rgba(0,242,254,0.05);' : ''}" onclick="phoneSelectSlot('${slot.start}', '${slot.end}')">
+                  <span style="font-size:9px; font-weight:bold; display:block; color: ${isSel ? 'var(--accent-cyan)' : 'var(--text-bright)'};">${slot.range}</span>
+                  <span style="font-size:8px; color:var(--text-muted); display:block; margin-top:2px;">${slot.status}</span>
+                  <div style="height:3px; background:var(--border-glass); border-radius:2px; margin-top:6px; overflow:hidden;">
+                    <div style="width:${slot.fill * 100}%; height:100%; background:${slot.color};"></div>
+                  </div>
+                  <span style="font-size:8px; color:var(--text-muted); display:block; margin-top:4px;">👥 ${Math.round(slot.fill * 100)}% Full</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div style="margin-top: 10px; padding: 8px; background: var(--bg-subtle); border-radius: 6px; border: 1px solid var(--border-glass);">
+            <div style="font-size: 8px; font-weight: bold; color: var(--text-bright); margin-bottom: 5px;">📊 Live Occupancy Heatmap (Daily Trend)</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 25px; padding-top: 5px;">
+              <div style="width: 12%; height: 18px; background: #38ef7d; border-radius: 1px;"></div>
+              <div style="width: 12%; height: 24px; background: #ff0844; border-radius: 1px;"></div>
+              <div style="width: 12%; height: 8px; background: #38ef7d; border-radius: 1px;"></div>
+              <div style="width: 12%; height: 12px; background: #38ef7d; border-radius: 1px;"></div>
+              <div style="width: 12%; height: 21px; background: #f6d365; border-radius: 1px;"></div>
+              <div style="width: 12%; height: 24px; background: #ff0844; border-radius: 1px;"></div>
+              <div style="width: 12%; height: 15px; background: #f6d365; border-radius: 1px;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 2px; font-size: 5px; color: var(--text-muted);">
+              <span>6A</span><span>8A</span><span>10A</span><span>12P</span><span>4P</span><span>6P</span><span>8P</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:12px; margin-bottom:15px;">
+          <h4 style="font-size:12px; margin-bottom:8px;">HRX & Special Studio Classes</h4>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${specialClasses.filter(c => c.gymId === loggedInCustomer.gymId).map(c => `
+              <div style="background:var(--bg-subtle); border-radius:8px; padding:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <span style="font-size:9px; font-weight:bold; display:block; color:var(--text-bright);">${c.title}</span>
+                  <span style="font-size:7px; color:var(--text-muted); display:block; margin-top:2px;">Trainer: ${c.trainer} | ${c.spots || 'spots available'}</span>
+                  <span style="font-size:8px; color:var(--accent-yellow); display:block; margin-top:2px;">🕒 ${c.time}</span>
+                </div>
+                <button class="btn btn-primary" style="width:auto; padding:4px 8px; font-size:9px; ${c.enrolled ? 'background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); cursor:default;' : ''}" onclick="${c.enrolled ? '' : `phoneJoinClass('${c.id}')`}" ${c.enrolled ? 'disabled' : ''}>
+                  ${c.enrolled ? 'Joined' : 'Join'}
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <h4 style="font-size:12px; margin-bottom:4px;">🏃 Gym Segment Challenges</h4>
+          <p style="font-size:9px; color:var(--text-muted); margin-bottom:8px;">Compete on local physical circuits.</p>
+          
+          ${challenges.map(chal => {
+            const myId = loggedInCustomer ? loggedInCustomer.id : 'cust-101';
+            return `
+              <div style="background:var(--bg-subtle); border-radius:8px; border:1px solid var(--border-glass); overflow:hidden; margin-bottom:10px;">
+                <div style="background:var(--bg-subtle); padding:8px; border-bottom:1px solid var(--border-glass); display:flex; justify-content:space-between; align-items:center;">
+                  <div style="flex:1; padding-right:5px;">
+                    <span style="font-size:9px; font-weight:bold; color:var(--accent-pink); display:block;">${chal.title}</span>
+                    <span style="font-size:7px; color:var(--text-muted); display:block; margin-top:2px;">${chal.description}</span>
+                  </div>
+                  <button class="btn btn-primary" style="padding:4px 6px; font-size:8px; width:auto; border-radius:4px;" onclick="phoneSubmitChallengeAttempt('${chal.id || chal._id}')">⏱️ LOG TIME</button>
+                </div>
+                <div style="padding:6px; font-size:8px; gap:4px; display:flex; flex-direction:column;">
+                  ${chal.leaderboard && chal.leaderboard.length > 0 ? chal.leaderboard.map((entry, idx) => {
+                    const isMe = entry.customerId === myId;
+                    return `
+                      <div style="display:flex; justify-content:space-between; border-bottom:${idx < chal.leaderboard.length - 1 ? '1px solid var(--border-glass)' : 'none'}; padding-bottom:2px; color:${isMe ? 'var(--text-bright)' : 'inherit'}; font-weight:${isMe ? 'bold' : 'normal'}">
+                        <span style="color:${idx === 0 ? 'var(--accent-yellow)' : isMe ? 'var(--text-bright)' : 'var(--text-muted)'}">${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '🏃'} ${idx + 1}. ${entry.customerName} ${isMe ? '(You)' : ''}</span>
+                        <strong>${entry.timeString}</strong>
+                      </div>
+                    `;
+                  }).join('') : `
+                    <div style="font-size:8px; color:var(--text-muted); text-align:center; font-style:italic;">No athlete attempts logged yet today.</div>
+                  `}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function phoneSelectSlot(start, end) {
+      loggedInCustomer.selectedWorkoutSlot = { start, end };
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+    }
+
+    function phoneOpenScanModal() {
+      const isActive = loggedInCustomer.subscription.status === 'Active' && new Date(loggedInCustomer.subscription.endDate) > new Date();
+      
+      if (!isActive && loggedInCustomer.carryForwardDays <= 0) {
+        alert('Check-in blocked! Your Indian subscription has expired. Please clear UPI payments with your Gym Desk Owner.');
+        return;
+      }
+
+      isScanActive = true;
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+    }
+
+    function phoneSimulateScanComplete() {
+      isScanActive = false;
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (phoneScanType === 'Check-In') {
+        const isActive = loggedInCustomer.subscription.status === 'Active' && new Date(loggedInCustomer.subscription.endDate) > new Date();
+        
+        if (!isActive && loggedInCustomer.carryForwardDays > 0) {
+          loggedInCustomer.carryForwardDays -= 1;
+        }
+
+        checkIns.push({
+          id: Date.now(),
+          gymId: loggedInCustomer.gymId,
+          name: loggedInCustomer.name,
+          type: 'In',
+          timeString: timeStr,
+          timestamp: now
+        });
+        
+        phoneScanType = 'Check-Out';
+        alert('Check-In Successful! Gym entry gates unlocked.');
+      } else {
+        const lastIn = checkIns.find(log => log.name === loggedInCustomer.name && log.type === 'In');
+        const duration = lastIn ? Math.max(1, Math.round((now - lastIn.timestamp) / 60000)) : 90;
+
+        checkIns.push({
+          id: Date.now(),
+          gymId: loggedInCustomer.gymId,
+          name: loggedInCustomer.name,
+          type: 'Out',
+          timeString: timeStr,
+          duration: duration
+        });
+
+        phoneScanType = 'Check-In';
+        workoutStreak += 1;
+        alert(`Check-Out Complete! Session duration: ${duration} mins. Workout logged.\nStreak incremented to ${workoutStreak} days! 🔥`);
+      }
+
+      renderClientAttendance();
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+    }
+
+    // ----------------------------------------------------
+    // COMMUNITY FORUM TAB
+    // ----------------------------------------------------
+    function renderPhoneForumTab(body) {
+      body.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:16px;">💬 Co-Member Forum</h3>
+        </div>
+
+        <!-- Forum Sub Tabs -->
+        <div style="display:flex; gap:6px; margin-bottom:12px; border-bottom:1px solid var(--border-glass); padding-bottom:6px;">
+          <button id="phone-subtab-bulletin-btn" class="btn btn-secondary" onclick="phoneChangeForumSubTab('bulletin')" style="padding: 4px 6px; font-size: 9px; flex: 1; ${phoneForumSubTab === 'bulletin' ? 'border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.05);' : ''}">📌 Bulletin</button>
+          <button id="phone-subtab-chat-btn" class="btn btn-secondary" onclick="phoneChangeForumSubTab('chat')" style="padding: 4px 6px; font-size: 9px; flex: 1; ${phoneForumSubTab === 'chat' ? 'border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 242, 254, 0.05);' : ''}">💬 Live Chat</button>
+        </div>
+      `;
+
+      if (phoneForumSubTab === 'bulletin') {
+        renderPhoneForumBulletin(body);
+      } else {
+        renderPhoneForumChat(body);
+      }
+    }
+
+    function phoneChangeForumSubTab(tab) {
+      phoneForumSubTab = tab;
+      renderPhoneForumTab(document.getElementById('phone-content'));
+    }
+
+    function renderPhoneForumBulletin(body) {
+      const posts = forumPosts.filter(p => p.gymId === loggedInCustomer.gymId);
+      body.innerHTML += `
+        <!-- New Thread box -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:10px; padding:10px; margin-bottom:15px;">
+          <input type="text" id="forum-new-title" class="form-input" style="margin-bottom:8px; font-size:11px;" placeholder="Topic Title (e.g. HIIT session group)">
+          <textarea id="forum-new-body" class="form-input" style="font-size:11px; min-height:40px; margin-bottom:8px; font-family:inherit; resize:none;" placeholder="Coordinate workout routes, timings, sets..."></textarea>
+          <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="phoneAddForumPost()">Publish Thread</button>
+        </div>
+
+        <!-- Feed List -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${posts.map(post => `
+            <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-left: ${post.isPinned ? '4px solid var(--accent-yellow)' : '1px solid var(--border-glass)'}; border-radius:12px; padding:12px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <div style="width:24px; height:24px; border-radius:12px; backgroundColor:${post.isPinned ? 'var(--accent-yellow)' : 'var(--accent-cyan)'}; display:flex; justify-content:center; align-items:center; font-size:10px; color:black; font-weight:bold;">${post.isPinned ? '📢' : post.customerName[0]}</div>
+                <div>
+                  <span style="font-size:11px; font-weight:bold; display:block;">${post.customerName}</span>
+                  <span style="font-size:8px; color:var(--text-muted);">${post.isPinned ? '📌 PINNED ANNOUNCEMENT' : 'Co-Member'}</span>
+                </div>
+              </div>
+
+              <h4 style="font-size:12px; margin-bottom:4px;">${post.title}</h4>
+              <p style="font-size:10px; color:var(--text-muted); line-height:14px; margin-bottom:8px;">${post.content}</p>
+
+              <!-- Actions -->
+              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-glass); padding-top:8px;">
+                <span style="font-size:10px; color:var(--accent-pink); cursor:pointer;" onclick="phoneLikePost('${post.id}')">❤️ ${post.likes} Likes</span>
+                <span style="font-size:10px; color:var(--text-muted);">${post.comments.length} comments</span>
+              </div>
+
+              <!-- Nested Comments -->
+              ${post.comments.length > 0 ? `
+                <div style="background:var(--bg-subtle); border-radius:6px; padding:8px; margin-top:8px; gap:6px; display:flex; flex-direction:column;">
+                  ${post.comments.map(c => `
+                    <div style="font-size:9px;">
+                      <strong style="color:var(--text-bright);">${c.name}:</strong> <span style="color:var(--text-muted);">${c.text}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+
+              <!-- Write comment input -->
+              <div style="display:flex; gap:6px; margin-top:8px;">
+                <input type="text" id="comment-input-${post.id}" class="form-input" style="padding:6px; font-size:10px; flex:1;" placeholder="Write reply...">
+                <button class="btn btn-primary" style="width:auto; padding:6px; font-size:10px;" onclick="phoneAddComment('${post.id}')">Send</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderPhoneForumChat(body) {
+      body.innerHTML += `
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:12px; display:flex; flex-direction:column; height:260px;">
+          <div id="phone-chat-history" style="flex:1; overflow-y:auto; padding-right:4px; display:flex; flex-direction:column; gap:8px;">
+            ${phoneLiveChatMessages.map(msg => {
+              const isMe = msg.name === (loggedInCustomer ? loggedInCustomer.name : 'Rahul Sharma');
+              return `
+                <div style="align-self: ${isMe ? 'flex-end' : 'flex-start'}; max-width: 80%; background: ${isMe ? 'rgba(0, 242, 254, 0.12)' : 'var(--bg-subtle)'}; border: 1px solid ${isMe ? 'var(--accent-cyan)' : 'var(--border-glass)'}; border-radius: 8px; padding: 6px 10px; text-align: left;">
+                  <span style="font-size: 7px; color: ${isMe ? 'var(--accent-cyan)' : 'var(--accent-yellow)'}; font-weight: bold; display: block; margin-bottom: 2px;">${msg.name}</span>
+                  <span style="font-size: 10px; color: var(--text-bright); display: block; line-height: 13px;">${msg.text}</span>
+                  <span style="font-size: 6px; color: var(--text-muted); text-align: right; display: block; margin-top: 2px;">${msg.time}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div style="display:flex; gap:6px; border-top:1px solid var(--border-glass); padding-top:8px; margin-top:8px;">
+            <input type="text" id="phone-chat-input" class="form-input" style="font-size:10px; padding:6px 10px;" placeholder="Send chat message...">
+            <button class="btn btn-primary" style="width:auto; padding:6px 12px; font-size:10px;" onclick="phoneSendChatMessage()">Send</button>
+          </div>
+        </div>
+      `;
+
+      setTimeout(() => {
+        const history = document.getElementById('phone-chat-history');
+        if (history) history.scrollTop = history.scrollHeight;
+      }, 50);
+    }
+
+    function phoneSendChatMessage() {
+      const input = document.getElementById('phone-chat-input');
+      if (!input || !input.value.trim()) return;
+      
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      phoneLiveChatMessages.push({
+        name: loggedInCustomer ? loggedInCustomer.name : 'Rahul Sharma',
+        text: input.value.trim(),
+        time: timeStr
+      });
+      
+      input.value = '';
+      renderPhoneForumTab(document.getElementById('phone-content'));
+    }
+
+    function phoneAddForumPost() {
+      const title = document.getElementById('forum-new-title').value.trim();
+      const content = document.getElementById('forum-new-body').value.trim();
+
+      if (!title || !content) {
+        alert('Please fill in topic title and description.');
+        return;
+      }
+
+      forumPosts.push({
+        id: 'p-' + Date.now(),
+        gymId: loggedInCustomer.gymId,
+        customerName: loggedInCustomer.name,
+        title,
+        content,
+        likes: 0,
+        comments: []
+      });
+
+      renderPhoneForumTab(document.getElementById('phone-content'));
+      alert('Thread published on the gym board!');
+    }
+
+    function clientChangeTab(tab) {
+      document.getElementById('client-content-members').style.display = tab === 'members' ? 'block' : 'none';
+      document.getElementById('client-content-classes').style.display = tab === 'classes' ? 'block' : 'none';
+      document.getElementById('client-content-mod').style.display = tab === 'mod' ? 'block' : 'none';
+      document.getElementById('client-content-challenges').style.display = tab === 'challenges' ? 'block' : 'none';
+      document.getElementById('client-content-poster').style.display = tab === 'poster' ? 'block' : 'none';
+      document.getElementById('client-content-gate').style.display = tab === 'gate' ? 'block' : 'none';
+      
+      document.getElementById('client-tab-members-btn').style.borderColor = tab === 'members' ? 'var(--accent-cyan)' : 'var(--border-glass)';
+      document.getElementById('client-tab-members-btn').style.color = tab === 'members' ? 'var(--accent-cyan)' : 'var(--text-main)';
+      
+      document.getElementById('client-tab-classes-btn').style.borderColor = tab === 'classes' ? 'var(--accent-cyan)' : 'var(--border-glass)';
+      document.getElementById('client-tab-classes-btn').style.color = tab === 'classes' ? 'var(--accent-cyan)' : 'var(--text-main)';
+      
+      document.getElementById('client-tab-mod-btn').style.borderColor = tab === 'mod' ? 'var(--accent-cyan)' : 'var(--border-glass)';
+      document.getElementById('client-tab-mod-btn').style.color = tab === 'mod' ? 'var(--accent-cyan)' : 'var(--text-main)';
+
+      document.getElementById('client-tab-challenges-btn').style.borderColor = tab === 'challenges' ? 'var(--accent-cyan)' : 'var(--border-glass)';
+      document.getElementById('client-tab-challenges-btn').style.color = tab === 'challenges' ? 'var(--accent-cyan)' : 'var(--text-main)';
+
+      document.getElementById('client-tab-poster-btn').style.borderColor = tab === 'poster' ? 'var(--accent-cyan)' : 'var(--border-glass)';
+      document.getElementById('client-tab-poster-btn').style.color = tab === 'poster' ? 'var(--accent-cyan)' : 'var(--text-main)';
+
+      document.getElementById('client-tab-gate-btn').style.borderColor = tab === 'gate' ? 'var(--accent-cyan)' : 'var(--border-glass)';
+      document.getElementById('client-tab-gate-btn').style.color = tab === 'gate' ? 'var(--accent-cyan)' : 'var(--text-main)';
+      
+      // Remove the active class from all and add to selected
+      document.getElementById('client-tab-members-btn').classList.remove('active-client-tab');
+      document.getElementById('client-tab-classes-btn').classList.remove('active-client-tab');
+      document.getElementById('client-tab-mod-btn').classList.remove('active-client-tab');
+      document.getElementById('client-tab-challenges-btn').classList.remove('active-client-tab');
+      document.getElementById('client-tab-poster-btn').classList.remove('active-client-tab');
+      document.getElementById('client-tab-gate-btn').classList.remove('active-client-tab');
+      document.getElementById(`client-tab-${tab}-btn`).classList.add('active-client-tab');
+
+      if (tab === 'members') {
+        renderClientCustomers();
+        renderClientAttendance();
+      }
+      if (tab === 'classes') renderClientClassesTab();
+      if (tab === 'mod') renderClientModTab();
+      if (tab === 'challenges') renderClientChallengesTab();
+      if (tab === 'poster') renderPosterTab();
+      if (tab === 'gate') renderCharts();
+    }
+
+    function renderClientClassesTab() {
+      const listDiv = document.getElementById('client-special-classes-list');
+      listDiv.innerHTML = '';
+      const filtered = specialClasses.filter(c => c.gymId === selectedClientGymId);
+      
+      if (filtered.length === 0) {
+        listDiv.innerHTML = `<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:15px;">No special studio classes scheduled yet.</div>`;
+        return;
+      }
+      
+      filtered.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="font-size:13px; color:var(--text-bright);">${c.title}</h4>
+              <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">Trainer: ${c.trainer} | ${c.spots}</p>
+              <span style="font-size:11px; color:var(--accent-yellow);">🕒 ${c.time}</span>
+            </div>
+            <div>
+              ${c.enrolled ? `<span style="font-size:10px; color:var(--accent-green); font-weight:bold;">✓ 1 Athlete Joined</span>` : `<span style="font-size:10px; color:var(--text-muted);">0 Joined</span>`}
+            </div>
+          </div>
+        `;
+        listDiv.appendChild(card);
+      });
+    }
+
+    function renderClientChallengesTab() {
+      const listDiv = document.getElementById('client-challenges-list');
+      listDiv.innerHTML = '';
+      const filtered = challenges.filter(c => c.gymId === selectedClientGymId);
+
+      if (filtered.length === 0) {
+        listDiv.innerHTML = `<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:15px;">No physical segment challenges published yet.</div>`;
+        return;
+      }
+
+      filtered.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        
+        let leaderboardHTML = '';
+        if (c.leaderboard && c.leaderboard.length > 0) {
+          leaderboardHTML = `
+            <div style="background:rgba(0,0,0,0.2); border-radius:6px; padding:8px; font-size:10px; margin-top:8px;">
+              <strong style="font-size:10px; color:var(--accent-cyan); display:block; margin-bottom:6px;">🏆 Co-Member Leaderboard</strong>
+              ${c.leaderboard.map((entry, idx) => `
+                <div style="display:flex; justify-content:space-between; border-bottom:${idx < c.leaderboard.length - 1 ? '1px solid rgba(255,255,255,0.02)' : 'none'}; padding-bottom:3px; margin-bottom:3px;">
+                  <span>${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '🏃'} ${idx + 1}. ${entry.customerName}</span>
+                  <strong>${entry.timeString}</strong>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          leaderboardHTML = `
+            <div style="font-size:9px; color:var(--text-muted); font-style:italic; margin-top:8px;">No athlete attempts logged yet.</div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div style="flex:1; padding-right:10px;">
+              <h4 style="font-size:13px; color:var(--text-bright);">${c.title}</h4>
+              <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">${c.description}</p>
+            </div>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:9px; width:auto; border-radius:4px;" onclick="clientDeleteChallenge('${c.id || c._id}')">🗑 Remove</button>
+          </div>
+          ${leaderboardHTML}
+        `;
+        listDiv.appendChild(card);
+      });
+    }
+
+    function clientAddChallenge(e) {
+      e.preventDefault();
+      const title = document.getElementById('challenge-title').value;
+      const description = document.getElementById('challenge-desc').value;
+      const id = 'ch-' + Date.now();
+
+      const executeAddChallenge = () => {
+        challenges.push({
+          id,
+          gymId: selectedClientGymId,
+          title: '🔥 CHALLENGE: ' + title,
+          description,
+          isActive: true,
+          leaderboard: []
+        });
+        renderClientChallengesTab();
+        if (loggedInCustomer) {
+          renderPhoneWorkoutTab(document.getElementById('phone-content'));
+        }
+      };
+
+      document.getElementById('challenge-title').value = '';
+      document.getElementById('challenge-desc').value = '';
+
+      if (simulatorOfflineMode) {
+        simulatorOfflineQueue.push({
+          panel: 'client',
+          execute: executeAddChallenge
+        });
+        updateSimulatorQueueBadges();
+      } else {
+        executeAddChallenge();
+      }
+    }
+
+    function clientDeleteChallenge(id) {
+      if (!confirm('Are you sure you want to remove this Segment Challenge?')) return;
+      challenges = challenges.filter(c => (c.id !== id && c._id !== id));
+      renderClientChallengesTab();
+      if (loggedInCustomer) {
+        renderPhoneWorkoutTab(document.getElementById('phone-content'));
+      }
+    }
+
+    function phoneSubmitChallengeAttempt(challengeId) {
+      if (!loggedInCustomer) {
+        alert('Please login as Rahul Sharma first!');
+        return;
+      }
+
+      const minValStr = prompt('Enter completed minutes (e.g. 13):');
+      if (minValStr === null) return;
+      const secValStr = prompt('Enter completed seconds (0-59):');
+      if (secValStr === null) return;
+
+      const minVal = parseInt(minValStr) || 0;
+      const secVal = parseInt(secValStr) || 0;
+
+      if (minVal < 0 || secVal < 0 || secVal >= 60) {
+        alert('Invalid time format. Please enter valid minutes and seconds (0-59).');
+        return;
+      }
+
+      const totalSeconds = minVal * 60 + secVal;
+      const timeStr = `${minVal}:${secVal.toString().padStart(2, '0')}`;
+      const custId = loggedInCustomer.id;
+
+      challenges.forEach(c => {
+        if (c.id === challengeId || c._id === challengeId) {
+          const existingIndex = c.leaderboard.findIndex(e => e.customerId === custId);
+          if (existingIndex > -1) {
+            if (totalSeconds < c.leaderboard[existingIndex].seconds) {
+              c.leaderboard[existingIndex].timeString = timeStr;
+              c.leaderboard[existingIndex].seconds = totalSeconds;
+              c.leaderboard[existingIndex].recordedAt = new Date();
+            }
+          } else {
+            c.leaderboard.push({
+              customerId: custId,
+              customerName: loggedInCustomer.name + ' (You)',
+              timeString: timeStr,
+              seconds: totalSeconds,
+              recordedAt: new Date()
+            });
+          }
+
+          // Sort ascending by seconds
+          c.leaderboard.sort((a, b) => a.seconds - b.seconds);
+        }
+      });
+
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+      // Sync list back to gym desk in real-time
+      if (document.getElementById('client-content-challenges').style.display === 'block') {
+        renderClientChallengesTab();
+      }
+      alert('Time logged successfully! Leaderboard updated.');
+    }
+
+    function clientAddClass(e) {
+      e.preventDefault();
+      const title = document.getElementById('class-title').value;
+      const trainer = document.getElementById('class-trainer').value;
+      const time = document.getElementById('class-time').value;
+      const spots = document.getElementById('class-spots').value;
+      
+      const id = 'sc-' + Date.now();
+      const executeAddClass = () => {
+        specialClasses.push({
+          id,
+          gymId: selectedClientGymId,
+          title,
+          trainer,
+          time,
+          enrolled: false,
+          spots
+        });
+        renderClientClassesTab();
+        if (loggedInCustomer) renderPhoneWorkoutTab(document.getElementById('phone-content'));
+      };
+      
+      document.getElementById('add-class-form').reset();
+
+      if (simulatorOfflineMode) {
+        simulatorOfflineQueue.push({
+          panel: 'client',
+          execute: executeAddClass
+        });
+        updateSimulatorQueueBadges();
+      } else {
+        executeAddClass();
+      }
+    }
+
+    function renderClientModTab() {
+      const listDiv = document.getElementById('client-mod-posts-list');
+      listDiv.innerHTML = '';
+      const filtered = forumPosts.filter(p => p.gymId === selectedClientGymId);
+      
+      if (filtered.length === 0) {
+        listDiv.innerHTML = `<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:15px;">No discussions or posts under this gym's community board.</div>`;
+        return;
+      }
+      
+      filtered.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.style.borderLeft = post.isPinned ? '4px solid var(--accent-yellow)' : '1px solid var(--border-glass)';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; gap: 10px;">
+            <div style="flex:1;">
+              <span class="badge ${post.isPinned ? 'badge-yellow' : 'badge-cyan'}" style="font-size:8px;">${post.isPinned ? '📌 PINNED NOTICE' : '👤 MEMBER'}</span>
+              <span style="font-size:10px; color:var(--text-muted); margin-left:5px;">by ${post.customerName}</span>
+              <h4 style="font-size:13px; color:var(--text-bright); margin-top:5px;">${post.title}</h4>
+              <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">${post.content}</p>
+            </div>
+            <button class="btn btn-danger" style="width:auto; padding:4px 8px; font-size:10px; flex-shrink:0;" onclick="clientDeletePost('${post.id}')">Remove</button>
+          </div>
+        `;
+        listDiv.appendChild(card);
+      });
+    }
+
+    function clientAddAnnouncement(e) {
+      e.preventDefault();
+      const title = document.getElementById('broadcast-title').value;
+      const content = document.getElementById('broadcast-body').value;
+      
+      const id = 'ann-' + Date.now();
+      forumPosts.unshift({
+        id,
+        gymId: selectedClientGymId,
+        customerName: '📢 Gym Announcement',
+        title,
+        content,
+        likes: 0,
+        isPinned: true,
+        comments: []
+      });
+      
+      document.getElementById('broadcast-form').reset();
+      renderClientModTab();
+      if (loggedInCustomer) renderPhoneForumTab(document.getElementById('phone-content'));
+      alert(`Announcement "${title}" broadcasted and pinned successfully!`);
+    }
+
+    function clientDeletePost(id) {
+      if (!confirm('Are you sure you want to moderate and remove this post?')) return;
+      forumPosts = forumPosts.filter(p => p.id !== id);
+      renderClientModTab();
+      if (loggedInCustomer) {
+        if (phoneTab === 'workout') {
+          renderPhoneWorkoutTab(document.getElementById('phone-content'));
+        } else {
+          renderPhoneForumTab(document.getElementById('phone-content'));
+        }
+      }
+      alert('Post moderated and deleted successfully!');
+    }
+
+    function openPhoneUpiModal(amount) {
+      document.getElementById('phone-upi-amount').innerText = `₹${amount.toLocaleString('en-IN')}`;
+      document.getElementById('phone-upi-ref').innerText = `Ref ID: SU-UPI-${Date.now().toString().slice(-6)}`;
+      document.getElementById('phone-upi-modal').style.display = 'flex';
+    }
+
+    function closePhoneUpiModal() {
+      document.getElementById('phone-upi-modal').style.display = 'none';
+    }
+
+    function completePhoneUpiPayment() {
+      closePhoneUpiModal();
+      
+      const nextEndDate = new Date();
+      nextEndDate.setFullYear(nextEndDate.getFullYear() + 1);
+      
+      loggedInCustomer.subscription.status = 'Active';
+      loggedInCustomer.subscription.endDate = nextEndDate;
+      loggedInCustomer.subscription.paymentMethod = 'Online';
+      
+      // Enforce: max 30 carryforward for Yearly subscription plan only
+      if (loggedInCustomer.subscription.planType === 'Yearly') {
+        loggedInCustomer.carryForwardDays = Math.min(30, loggedInCustomer.carryForwardDays || 0);
+      } else {
+        loggedInCustomer.carryForwardDays = 0;
+      }
+      
+      alert(`UPI Payment Successful!\n\nYour Fitmaniac pass is instantly active!`);
+      
+      renderClientCustomers();
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+    }
+
+    function openPhoneMilestonesModal() {
+      renderMilestonesModalList();
+      document.getElementById('phone-milestones-modal').style.display = 'flex';
+    }
+
+    function closePhoneMilestonesModal() {
+      document.getElementById('phone-milestones-modal').style.display = 'none';
+    }
+
+    function claimStreakReward() {
+      closePhoneMilestonesModal();
+      alert('🏆 Streak Badges Earned!\n\nCheck out your newly unlocked badges in the earned badges shelf on the Workouts tab.');
+    }
+
+    function phoneJoinClass(id) {
+      specialClasses.forEach(c => {
+        if (c.id === id) {
+          c.enrolled = true;
+          alert(`Successfully joined ${c.title}!`);
+        }
+      });
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+      renderClientClassesTab();
+    }
+
+    function phoneLikePost(id) {
+      forumPosts.forEach(p => {
+        if (p.id === id) p.likes += 1;
+      });
+      renderPhoneForumTab(document.getElementById('phone-content'));
+    }
+
+    function phoneAddComment(id) {
+      const txt = document.getElementById(`comment-input-${id}`).value.trim();
+      if (!txt) return;
+
+      forumPosts.forEach(p => {
+        if (p.id === id) {
+          p.comments.push({
+            name: loggedInCustomer.name,
+            text: txt
+          });
+        }
+      });
+
+      renderPhoneForumTab(document.getElementById('phone-content'));
+    }
+
+    // --- Phase 8 New Helper Functions ---
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light-theme');
+      document.getElementById('global-theme-btn').innerHTML = isLight ? '🌙' : '☀️';
+      localStorage.setItem('simulator-theme', isLight ? 'light' : 'dark');
+      
+      if (loggedInCustomer) {
+        if (phoneTab === 'workout') {
+          renderPhoneWorkoutTab(document.getElementById('phone-content'));
+        } else {
+          renderPhoneForumTab(document.getElementById('phone-content'));
+        }
+      }
+    }
+
+    function renderPosterTab() {
+      const gym = gyms.find(g => g.id === selectedClientGymId) || gyms[0];
+      document.getElementById('poster-preview-token').innerText = (gym.barcodeToken || 'fitfreak_001').toUpperCase();
+      document.getElementById('poster-preview-gymname').innerText = gym.name || 'Fitmaniac Center Koramangala';
+      document.getElementById('poster-preview-location').innerText = gym.location || '100 Feet Road, Koramangala, Bangalore';
+    }
+
+    function renderMilestonesModalList() {
+      const list = document.getElementById('phone-milestones-list');
+      list.innerHTML = `
+        <div style="background: rgba(56, 239, 125, 0.08); border: 1px solid #38ef7d; border-radius: 8px; padding: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <span style="font-size: 10px; font-weight: bold; color: var(--text-bright); display: block;">🥉 Bronze Level (5 Days)</span>
+            <span style="font-size: 8px; color: var(--text-muted);">Reward: Bronze Gate Badge & Free shaker</span>
+          </div>
+          <span style="font-size: 9px; color: #38ef7d; font-weight: bold;">Progress: ${workoutStreak}/5</span>
+        </div>
+        
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-glass); border-radius: 8px; padding: 8px; display: flex; justify-content: space-between; align-items: center; ${workoutStreak >= 10 ? '' : 'opacity: 0.6;'}">
+          <div>
+            <span style="font-size: 10px; font-weight: bold; color: ${workoutStreak >= 10 ? 'var(--text-bright)' : 'var(--text-muted)'}; display: block;">🥈 Silver Elite (10 Days)</span>
+            <span style="font-size: 8px; color: var(--text-muted);">Reward: Silver Gate Badge & Trainer session</span>
+          </div>
+          <span style="font-size: 9px; color: ${workoutStreak >= 10 ? '#38ef7d' : 'var(--text-muted)'}; font-weight: ${workoutStreak >= 10 ? 'bold' : 'normal'};">
+            ${workoutStreak >= 10 ? 'Unlocked' : 'Locked'}
+          </span>
+        </div>
+
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-glass); border-radius: 8px; padding: 8px; display: flex; justify-content: space-between; align-items: center; ${workoutStreak >= 30 ? '' : 'opacity: 0.6;'}">
+          <div>
+            <span style="font-size: 10px; font-weight: bold; color: ${workoutStreak >= 30 ? 'var(--text-bright)' : 'var(--text-muted)'}; display: block;">🥇 Gold Warrior (30 Days)</span>
+            <span style="font-size: 8px; color: var(--text-muted);">Reward: Gold Legend Badge & Special class</span>
+          </div>
+          <span style="font-size: 9px; color: ${workoutStreak >= 30 ? '#38ef7d' : 'var(--text-muted)'}; font-weight: ${workoutStreak >= 30 ? 'bold' : 'normal'};">
+            ${workoutStreak >= 30 ? 'Unlocked' : 'Locked'}
+          </span>
+        </div>
+      `;
+    }
+
+    function downloadPosterImage() {
+      const gym = gyms.find(g => g.id === selectedClientGymId) || gyms[0];
+      const code = gym.barcodeToken || 'fitfreak_001';
+      const gymName = gym.name || 'Fitmaniac Center Koramangala';
+      const gymLocation = gym.location || 'Koramangala, Bangalore';
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 800;
+      canvas.height = 1200;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 0, 1200);
+      grad.addColorStop(0, '#0a0e17');
+      grad.addColorStop(0.5, '#121a2c');
+      grad.addColorStop(1, '#070b13');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 800, 1200);
+
+      ctx.fillStyle = 'rgba(0, 242, 254, 0.04)';
+      ctx.beginPath();
+      ctx.arc(100, 100, 300, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(255, 8, 68, 0.03)';
+      ctx.beginPath();
+      ctx.arc(700, 1100, 300, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 15;
+      ctx.strokeRect(30, 30, 740, 1140);
+
+      ctx.strokeStyle = '#00f2fe';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(45, 45, 710, 1110);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 50px sans-serif';
+      ctx.fillText('FITMANIAC', 400, 150);
+
+      ctx.font = '22px sans-serif';
+      ctx.fillStyle = '#00f2fe';
+      ctx.fillText('INDIAN CONNECTED FITNESS NETWORK', 400, 190);
+
+      ctx.font = 'bold 56px sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('SCAN TO CHECK-IN', 400, 320);
+      
+      ctx.font = '26px sans-serif';
+      ctx.fillStyle = '#9ca3af';
+      ctx.fillText('Open your Fitmaniac App and scan code at the gate', 400, 370);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(150, 450, 500, 250);
+
+      ctx.fillStyle = '#000000';
+      let xpos = 180;
+      ctx.fillRect(xpos, 470, 10, 210);
+      xpos += 15;
+      ctx.fillRect(xpos, 470, 5, 210);
+      xpos += 10;
+      for (let i = 0; i < code.length; i++) {
+        const charCode = code.charCodeAt(i);
+        const w1 = (charCode % 3) + 2;
+        const space = (charCode % 4) + 4;
+        ctx.fillRect(xpos, 470, w1 * 2, 210);
+        xpos += (w1 * 2) + (space * 2);
+      }
+      ctx.fillRect(xpos, 470, 10, 210);
+
+      ctx.fillStyle = '#111827';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText(code.toUpperCase(), 400, 735);
+
+      ctx.font = 'bold 36px sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(gymName, 400, 840);
+      
+      ctx.font = '22px sans-serif';
+      ctx.fillStyle = '#9ca3af';
+      ctx.fillText(gymLocation, 400, 880);
+
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillStyle = '#38ef7d';
+      ctx.fillText('⚡ Entrance gate opens instantly on scan', 400, 980);
+
+      ctx.font = '18px sans-serif';
+      ctx.fillStyle = '#6b7280';
+      ctx.fillText('Absence days are rolled over to carry-forward (Max 30 days, Yearly members only)', 400, 1030);
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `Fitmaniac_Gate_Poster_${code}.png`;
+      link.href = dataUrl;
+      link.click();
+    }
+
+    function simulateGateScan() {
+      if (!loggedInCustomer) {
+        playGateTone(150, 0.2);
+        updateTerminalUI(false, "No Active Phone Session", "Please login on the simulated phone app first!");
+        return;
+      }
+      
+      const isActive = loggedInCustomer.subscription.status === 'Active' && new Date(loggedInCustomer.subscription.endDate) > new Date();
+      
+      if (!isActive && loggedInCustomer.carryForwardDays <= 0) {
+        playGateTone(150, 0.2);
+        updateTerminalUI(false, "ACCESS DENIED", "Subscription Expired / No Carry-Forward Days");
+        return;
+      }
+
+      playGateTone(880, 0.1);
+      setTimeout(() => playGateTone(1320, 0.15), 100);
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      if (phoneScanType === 'Check-Out') {
+        const lastIn = checkIns.find(log => log.name === loggedInCustomer.name && log.type === 'In');
+        const duration = lastIn ? Math.max(1, Math.round((now - lastIn.timestamp) / 60000)) : 90;
+
+        checkIns.push({
+          id: Date.now(),
+          gymId: loggedInCustomer.gymId,
+          name: loggedInCustomer.name,
+          type: 'Out',
+          timeString: timeStr,
+          duration: duration
+        });
+        
+        phoneScanType = 'Check-In';
+        workoutStreak += 1;
+        updateTerminalUI(true, "ACCESS GRANTED (EXIT)", `${loggedInCustomer.name} Checked Out.<br>Session: ${duration} mins.<br>Streak: ${workoutStreak} days! 🔥`);
+      } else {
+        if (!isActive && loggedInCustomer.carryForwardDays > 0) {
+          loggedInCustomer.carryForwardDays -= 1;
+        }
+
+        checkIns.push({
+          id: Date.now(),
+          gymId: loggedInCustomer.gymId,
+          name: loggedInCustomer.name,
+          type: 'In',
+          timeString: timeStr,
+          timestamp: now
+        });
+        
+        phoneScanType = 'Check-Out';
+        updateTerminalUI(true, "ACCESS GRANTED (ENTRY)", `${loggedInCustomer.name} Checked In.<br>Streak: ${workoutStreak} Days.<br>Carry Forward: ${loggedInCustomer.carryForwardDays} left.`);
+      }
+
+      renderClientAttendance();
+      renderPhoneWorkoutTab(document.getElementById('phone-content'));
+      renderClientCustomers();
+      renderCharts();
+    }
+
+    function updateTerminalUI(success, title, msg) {
+      const screen = document.getElementById('terminal-screen');
+      const indicator = document.getElementById('terminal-status-indicator');
+      const display = document.getElementById('terminal-display-content');
+
+      if (success) {
+        screen.style.borderColor = "var(--accent-green)";
+        screen.style.boxShadow = "0 0 20px rgba(56, 239, 125, 0.3)";
+        indicator.style.color = "var(--accent-green)";
+        indicator.innerText = "● GATE OPEN / UNLOCKED";
+        
+        display.innerHTML = `
+          <span style="font-size: 44px; display: block; margin-bottom: 8px;">🔓</span>
+          <h4 style="font-size: 15px; color: var(--accent-green); font-weight: bold; margin-bottom: 5px;">${title}</h4>
+          <p style="font-size: 11px; color: var(--text-main); line-height: 14px;">${msg}</p>
+        `;
+      } else {
+        screen.style.borderColor = "var(--accent-pink)";
+        screen.style.boxShadow = "0 0 20px rgba(255, 8, 68, 0.3)";
+        indicator.style.color = "var(--accent-pink)";
+        indicator.innerText = "● ACCESS BLOCKED / LOCKED";
+        
+        display.innerHTML = `
+          <span style="font-size: 44px; display: block; margin-bottom: 8px;">🚫</span>
+          <h4 style="font-size: 15px; color: var(--accent-pink); font-weight: bold; margin-bottom: 5px;">${title}</h4>
+          <p style="font-size: 11px; color: var(--text-muted); line-height: 14px;">${msg}</p>
+        `;
+      }
+    }
+
+    function resetGateScanner() {
+      const screen = document.getElementById('terminal-screen');
+      const indicator = document.getElementById('terminal-status-indicator');
+      const display = document.getElementById('terminal-display-content');
+
+      screen.style.borderColor = "var(--accent-cyan)";
+      screen.style.boxShadow = "none";
+      indicator.style.color = "var(--accent-pink)";
+      indicator.innerText = "● GATE CLOSED / LOCKED";
+      
+      display.innerHTML = `
+        <span style="font-size: 36px; display: block; margin-bottom: 8px;">🔒</span>
+        <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Awaiting Scan...</span>
+      `;
+    }
+
+    function playGateTone(freq, duration) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.log("Audio API not supported or blocked");
+      }
+    }
+
+    function renderCharts() {
+      const filtered = customers.filter(c => c.gymId === selectedClientGymId);
+      const yearlyCount = filtered.filter(c => c.subscription.planType === 'Yearly').length;
+      const quarterlyCount = filtered.filter(c => c.subscription.planType === 'Quarterly').length;
+      const monthlyCount = filtered.filter(c => c.subscription.planType === 'Monthly').length;
+      
+      const total = yearlyCount + quarterlyCount + monthlyCount || 1;
+      
+      const yearlyPct = Math.round((yearlyCount / total) * 100);
+      const quarterlyPct = Math.round((quarterlyCount / total) * 100);
+      const monthlyPct = Math.round((monthlyCount / total) * 100);
+      
+      const yrSpan = document.getElementById('chart-yearly-count');
+      if (yrSpan) yrSpan.innerText = yearlyCount;
+      const moSpan = document.getElementById('chart-monthly-count');
+      if (moSpan) moSpan.innerText = monthlyCount;
+      
+      const ringYearly = document.getElementById('ring-yearly');
+      const ringMonthly = document.getElementById('ring-monthly');
+      
+      if (ringYearly && ringMonthly) {
+        ringYearly.setAttribute('stroke-dasharray', `${yearlyPct} ${100 - yearlyPct}`);
+        ringMonthly.setAttribute('stroke-dasharray', `${monthlyPct} ${100 - monthlyPct}`);
+        ringMonthly.setAttribute('stroke-dashoffset', `-${yearlyPct}`);
+      }
+    }
+  </script>
+</body>
+</html>

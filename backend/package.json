@@ -1,0 +1,23 @@
+{
+  "name": "gym-fitness-backend",
+  "version": "1.0.0",
+  "description": "Hono Backend API for Gym Fitness Application",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.11.2",
+    "dotenv": "^16.4.5",
+    "hono": "^4.4.2",
+    "mongoose": "^8.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "tsx": "^4.15.1",
+    "typescript": "^5.4.5"
+  }
+}
