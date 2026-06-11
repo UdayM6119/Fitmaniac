@@ -93,22 +93,17 @@
       box-shadow: 0 4px 30px rgba(0,0,0,0.4);
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 12px;
+      display: flex; align-items: center; gap: 10px;
       font-family: var(--font-heading);
-      font-size: 1.5rem; font-weight: 800;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--text-bright);
+      text-decoration: none;
     }
-    .nav-logo-icon {
-      width: 40px; height: 40px;
-      background: var(--gradient-primary);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-      flex-shrink: 0;
+    .nav-logo img {
+      height: 44px; width: auto;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.4));
     }
     .nav-links {
       display: flex; align-items: center; gap: 8px;
@@ -434,7 +429,7 @@
     .step-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
 
     /* ===================== PLANS / PRICING ===================== */
-    #pricing { }
+    #pricing { display: none; }
     .plans-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -488,57 +483,85 @@
     #testimonials { background: rgba(15, 23, 44, 0.3); }
     .testimonials-slider {
       margin-top: 60px;
-      position: relative; overflow: hidden;
+      position: relative;
+    }
+    /* Viewport that clips the overflow */
+    .testimonials-viewport {
+      overflow: hidden;
+      width: 100%;
     }
     .testimonials-track {
-      display: flex; gap: 24px;
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
       transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
     }
     .testimonial-card {
-      min-width: calc(33.33% - 16px);
+      flex: 0 0 calc((100% - 48px) / 3);
       background: var(--bg-card);
       backdrop-filter: blur(16px);
       border: 1px solid var(--border-glass);
-      border-radius: 20px; padding: 32px;
-      flex-shrink: 0;
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
       transition: all 0.3s ease;
+      box-sizing: border-box;
     }
     .testimonial-card:hover { border-color: rgba(255,255,255,0.15); }
-    .t-stars { color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 16px; }
+    .t-stars { color: var(--accent-yellow); font-size: 1rem; margin-bottom: 16px; letter-spacing: 2px; }
     .t-text {
       color: var(--text-muted); font-size: 0.95rem;
-      line-height: 1.75; margin-bottom: 24px;
+      line-height: 1.8; margin-bottom: 24px;
       font-style: italic;
+      flex: 1;
+      position: relative;
+      padding-left: 18px;
     }
-    .t-text::before { content: '"'; font-size: 2rem; color: var(--accent-cyan); line-height: 0; vertical-align: -0.5em; }
-    .t-author { display: flex; align-items: center; gap: 12px; }
+    .t-text::before {
+      content: '"';
+      position: absolute;
+      left: 0; top: -4px;
+      font-size: 2.5rem;
+      color: var(--accent-cyan);
+      line-height: 1;
+      font-style: normal;
+    }
+    .t-author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
     .t-avatar {
-      width: 44px; height: 44px; border-radius: 50%;
+      width: 46px; height: 46px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; font-weight: 700; flex-shrink: 0;
+      font-size: 0.9rem; font-weight: 700; flex-shrink: 0;
+      color: #000;
     }
-    .t-name { font-weight: 700; font-size: 0.95rem; }
-    .t-role { color: var(--text-muted); font-size: 0.8rem; }
+    .t-name { font-weight: 700; font-size: 0.95rem; color: var(--text-bright); }
+    .t-role { color: var(--text-muted); font-size: 0.78rem; margin-top: 2px; }
     .slider-controls {
-      display: flex; gap: 12px; justify-content: center;
+      display: flex; gap: 12px; justify-content: center; align-items: center;
       margin-top: 40px;
     }
     .slider-btn {
       width: 44px; height: 44px; border-radius: 50%;
       border: 1px solid var(--border-glass);
       background: var(--bg-card);
-      color: var(--text-main); font-size: 1rem;
+      color: var(--text-main); font-size: 1.1rem;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s ease;
+      transition: all 0.2s ease; flex-shrink: 0;
     }
     .slider-btn:hover { background: rgba(0,242,254,0.1); border-color: rgba(0,242,254,0.4); color: var(--accent-cyan); }
     .slider-dots { display: flex; gap: 8px; align-items: center; }
     .slider-dot {
       width: 8px; height: 8px; border-radius: 50%;
-      background: var(--border-glass); cursor: pointer;
-      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.15); cursor: pointer;
+      transition: all 0.3s ease; border: none;
     }
     .slider-dot.active { background: var(--accent-cyan); width: 24px; border-radius: 4px; }
+    @media (max-width: 900px) {
+      .testimonial-card { flex: 0 0 calc((100% - 24px) / 2); }
+    }
+    @media (max-width: 600px) {
+      .testimonial-card { flex: 0 0 100%; }
+    }
 
     /* ===================== APP SCREENSHOTS ===================== */
     #screenshots {}
@@ -785,13 +808,12 @@
 <!-- ===================== NAVBAR ===================== -->
 <nav id="navbar" role="navigation" aria-label="Main navigation">
   <a href="#hero" class="nav-logo">
-    <div class="nav-logo-icon">⚡</div>
+    <img src="logo.png" alt="Fitmaniac Logo" />
     Fitmaniac
   </a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
-    <li><a href="#pricing">Pricing</a></li>
     <li><a href="#testimonials">Reviews</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#terms">T&amp;C</a></li>
@@ -806,7 +828,6 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#features">Features</a>
   <a href="#how-it-works">How It Works</a>
-  <a href="#pricing">Pricing</a>
   <a href="#testimonials">Reviews</a>
   <a href="#faq">FAQ</a>
   <a href="#terms">Terms &amp; Conditions</a>
@@ -1259,80 +1280,82 @@
       <p class="section-sub">Hear from real members and gym owners who have transformed their fitness journey with our platform.</p>
     </div>
     <div class="testimonials-slider reveal" style="margin-top:60px;">
-      <div class="testimonials-track" id="testimonialsTrack">
+      <div class="testimonials-viewport">
+        <div class="testimonials-track" id="testimonialsTrack">
 
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text"> The carry-forward days feature alone is worth the yearly plan. I travel frequently for work and used to lose so many gym days. Fitmaniac actually respects my money. Streak tracking keeps me accountable like nothing else has before.</p>
-          <div class="t-author">
-            <div class="t-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">RS</div>
-            <div>
-              <div class="t-name">Rahul Sharma</div>
-              <div class="t-role">Software Engineer · Koramangala</div>
+          <div class="testimonial-card">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-text"> The carry-forward days feature alone is worth the yearly plan. I travel frequently for work and used to lose so many gym days. Fitmaniac actually respects my money. Streak tracking keeps me accountable like nothing else has before.</p>
+            <div class="t-author">
+              <div class="t-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">RS</div>
+              <div>
+                <div class="t-name">Rahul Sharma</div>
+                <div class="t-role">Software Engineer · Koramangala</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text"> Running a gym used to mean drowning in spreadsheets. Now I just open the dashboard, approve renewals, schedule a Zumba class, and export the monthly report in seconds. The gate scanner terminal is a game-changer for security.</p>
-          <div class="t-author">
-            <div class="t-avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d);">SD</div>
-            <div>
-              <div class="t-name">Sarah D'Souza</div>
-              <div class="t-role">Gym Owner · Fitfreak Center, Bangalore</div>
+          <div class="testimonial-card">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-text"> Running a gym used to mean drowning in spreadsheets. Now I just open the dashboard, approve renewals, schedule a Zumba class, and export the monthly report in seconds. The gate scanner terminal is a game-changer for security.</p>
+            <div class="t-author">
+              <div class="t-avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d);">SD</div>
+              <div>
+                <div class="t-name">Sarah D'Souza</div>
+                <div class="t-role">Gym Owner · Fitfreak Center, Bangalore</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text"> I won the HRX Circuit challenge last month! The leaderboard is so motivating — seeing your name move up the rankings after logging a personal best is addictive in the best way. The UPI renewal is instant and seamless too.</p>
-          <div class="t-author">
-            <div class="t-avatar" style="background:linear-gradient(135deg,#ff0844,#ffb199);">MD</div>
-            <div>
-              <div class="t-name">Marcus Dutt</div>
-              <div class="t-role">Fitness Enthusiast · Quarterly Member</div>
+          <div class="testimonial-card">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-text"> I won the HRX Circuit challenge last month! The leaderboard is so motivating — seeing your name move up the rankings after logging a personal best is addictive in the best way. The UPI renewal is instant and seamless too.</p>
+            <div class="t-author">
+              <div class="t-avatar" style="background:linear-gradient(135deg,#ff0844,#ffb199);">MD</div>
+              <div>
+                <div class="t-name">Marcus Dutt</div>
+                <div class="t-role">Fitness Enthusiast · Quarterly Member</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★☆</div>
-          <p class="t-text"> As a yoga trainer, I love that I can schedule my Breathwork Masterclass sessions directly on the platform and see enrollments in real-time. The community moderation tools make it easy to keep conversations healthy and focused.</p>
-          <div class="t-author">
-            <div class="t-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">AD</div>
-            <div>
-              <div class="t-name">Acharya Dev</div>
-              <div class="t-role">Yoga Trainer · Zen Fitness Hub</div>
+          <div class="testimonial-card">
+            <div class="t-stars">★★★★☆</div>
+            <p class="t-text"> As a yoga trainer, I love that I can schedule my Breathwork Masterclass sessions directly on the platform and see enrollments in real-time. The community moderation tools make it easy to keep conversations healthy and focused.</p>
+            <div class="t-author">
+              <div class="t-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">AD</div>
+              <div>
+                <div class="t-name">Acharya Dev</div>
+                <div class="t-role">Yoga Trainer · Zen Fitness Hub</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text"> The occupancy heatmap is brilliant! I shifted my workout to the 6AM slot after seeing how crowded the evening sessions get. I get the weights I need without waiting. The dynamic QR pass is super fast and never fails at the gate.</p>
-          <div class="t-author">
-            <div class="t-avatar" style="background:linear-gradient(135deg,#f6d365,#fda085);">PP</div>
-            <div>
-              <div class="t-name">Priya Patel</div>
-              <div class="t-role">Marketing Manager · Monthly Member</div>
+          <div class="testimonial-card">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-text"> The occupancy heatmap is brilliant! I shifted my workout to the 6AM slot after seeing how crowded the evening sessions get. I get the weights I need without waiting. The dynamic QR pass is super fast and never fails at the gate.</p>
+            <div class="t-author">
+              <div class="t-avatar" style="background:linear-gradient(135deg,#f6d365,#fda085);">PP</div>
+              <div>
+                <div class="t-name">Priya Patel</div>
+                <div class="t-role">Marketing Manager · Monthly Member</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text"> Switching our gym to Fitmaniac was the best business decision this year. Membership renewals went up 40% because the UPI checkout is so frictionless. The offline sync means we never lose data even when the internet flickers.</p>
-          <div class="t-author">
-            <div class="t-avatar" style="background:linear-gradient(135deg,#00f2fe,#4facfe);">SN</div>
-            <div>
-              <div class="t-name">Shayan Nair</div>
-              <div class="t-role">Gym Owner · Iron Republic, Mumbai</div>
+          <div class="testimonial-card">
+            <div class="t-stars">★★★★★</div>
+            <p class="t-text"> Switching our gym to Fitmaniac was the best business decision this year. Membership renewals went up 40% because the UPI checkout is so frictionless. The offline sync means we never lose data even when the internet flickers.</p>
+            <div class="t-author">
+              <div class="t-avatar" style="background:linear-gradient(135deg,#00f2fe,#4facfe);">SN</div>
+              <div>
+                <div class="t-name">Shayan Nair</div>
+                <div class="t-role">Gym Owner · Iron Republic, Mumbai</div>
+              </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
       <div class="slider-controls">
         <button class="slider-btn" id="sliderPrev" aria-label="Previous testimonials">&#8592;</button>
@@ -1712,44 +1735,55 @@
   const track = document.getElementById('testimonialsTrack');
   const dotsContainer = document.getElementById('sliderDots');
   let current = 0;
-  let cardWidth = 0;
-  let visibleCards = 3;
   let totalSlides = 0;
   let autoplayTimer;
+  const GAP = 24;
+
+  function getVisibleCount() {
+    return window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : 3;
+  }
+
+  function getCardWidth() {
+    const firstCard = track.querySelector('.testimonial-card');
+    return firstCard ? firstCard.getBoundingClientRect().width : 0;
+  }
 
   function initSlider() {
-    const windowW = window.innerWidth;
-    visibleCards = windowW < 600 ? 1 : windowW < 900 ? 1 : 3;
     const cards = track.querySelectorAll('.testimonial-card');
-    totalSlides = Math.max(0, cards.length - visibleCards + 1);
-    if (cards.length > 0) {
-      const gap = 24;
-      const containerW = track.parentElement.offsetWidth;
-      cardWidth = (containerW - gap * (visibleCards - 1)) / visibleCards;
-      cards.forEach(c => { c.style.minWidth = cardWidth + 'px'; });
-    }
-    // dots
+    const vis = getVisibleCount();
+    totalSlides = Math.max(1, cards.length - vis + 1);
+    current = Math.min(current, totalSlides - 1);
+
+    // Rebuild dots
     dotsContainer.innerHTML = '';
     for (let i = 0; i < totalSlides; i++) {
-      const dot = document.createElement('div');
+      const dot = document.createElement('button');
       dot.className = 'slider-dot' + (i === current ? ' active' : '');
-      dot.addEventListener('click', () => goTo(i));
+      dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      dot.addEventListener('click', () => { goTo(i); resetAutoplay(); });
       dotsContainer.appendChild(dot);
     }
-    goTo(Math.min(current, totalSlides - 1));
+    goTo(current);
   }
 
   function goTo(idx) {
     current = Math.max(0, Math.min(idx, totalSlides - 1));
-    const offset = current * (cardWidth + 24);
+    const cw = getCardWidth();
+    const offset = current * (cw + GAP);
     track.style.transform = `translateX(-${offset}px)`;
     dotsContainer.querySelectorAll('.slider-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
   }
 
-  document.getElementById('sliderPrev').addEventListener('click', () => { goTo(current - 1); resetAutoplay(); });
-  document.getElementById('sliderNext').addEventListener('click', () => { goTo(current < totalSlides - 1 ? current + 1 : 0); resetAutoplay(); });
+  document.getElementById('sliderPrev').addEventListener('click', () => {
+    goTo(current > 0 ? current - 1 : totalSlides - 1);
+    resetAutoplay();
+  });
+  document.getElementById('sliderNext').addEventListener('click', () => {
+    goTo(current < totalSlides - 1 ? current + 1 : 0);
+    resetAutoplay();
+  });
 
   function resetAutoplay() {
     clearInterval(autoplayTimer);
