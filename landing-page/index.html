@@ -93,17 +93,19 @@
       box-shadow: 0 4px 30px rgba(0,0,0,0.4);
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      font-family: var(--font-heading);
-      font-size: 1.4rem; font-weight: 800;
-      color: var(--text-bright);
+      display: flex; align-items: center;
       text-decoration: none;
+      flex-shrink: 0;
     }
     .nav-logo img {
-      height: 44px; width: auto;
+      height: 56px; width: auto;
       object-fit: contain;
       display: block;
-      filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.4));
+      filter: drop-shadow(0 0 14px rgba(0, 242, 254, 0.55));
+      transition: filter 0.3s ease;
+    }
+    .nav-logo:hover img {
+      filter: drop-shadow(0 0 22px rgba(0, 242, 254, 0.85));
     }
     .nav-links {
       display: flex; align-items: center; gap: 8px;
@@ -807,9 +809,8 @@
 
 <!-- ===================== NAVBAR ===================== -->
 <nav id="navbar" role="navigation" aria-label="Main navigation">
-  <a href="#hero" class="nav-logo">
+  <a href="#hero" class="nav-logo" aria-label="Fitmaniac Home">
     <img src="logo.png" alt="Fitmaniac Logo" />
-    Fitmaniac
   </a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
@@ -1650,7 +1651,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="logo">⚡ Fitmaniac</div>
+        <div class="logo"><img src="logo.png" alt="Fitmaniac" style="height:64px;width:auto;filter:drop-shadow(0 0 12px rgba(0,242,254,0.5));"/></div>
         <p>India's premium gym partner network — connecting athletes, gym owners, and trainers through smart technology, gamified fitness, and a thriving community.</p>
         <div class="social-row">
           <a href="https://www.instagram.com/fitmaniac.in" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Instagram">📸</a>
