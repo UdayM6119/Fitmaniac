@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fitmaniac – India's Premium Gym Partner Network</title>
+  <meta name="description" content="Fitmaniac connects gym owners and fitness enthusiasts with a premium, smart gym management and member experience platform. Flexible slots, UPI payments, dynamic QR check-ins, and gamified challenges." />
+  <meta name="keywords" content="Fitmaniac, gym app India, gym management software, fitness app, gym membership, QR check-in, UPI gym payment" />
+  <meta property="og:title" content="Fitmaniac – India's Premium Gym Partner Network" />
+  <meta property="og:description" content="Smart gym management, flexible workouts, and a connected fitness community. All in one platform." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===================== ROOT TOKENS (Aurora Theme) ===================== */
+    :root {
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --bg-dark: #080c15;
+      --bg-card: rgba(15, 23, 44, 0.65);
+      --bg-subtle: rgba(10, 14, 23, 0.35);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-pink: #ff0844;
+      --accent-yellow: #f6d365;
+      --accent-green: #38ef7d;
+      --accent-purple: #a855f7;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #ffffff;
+      --gradient-primary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --gradient-fire: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+      --gradient-green: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      --glow-cyan: 0 0 40px rgba(0, 242, 254, 0.25);
+      --glow-pink: 0 0 40px rgba(255, 8, 68, 0.2);
+      --nav-h: 72px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    h1,h2,h3,h4,h5,h6 {
+      font-family: var(--font-heading);
+      color: var(--text-bright);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; }
+    section { position: relative; }
+
+    /* ===================== SCROLLBAR ===================== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0e17; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(#4facfe, #00f2fe); border-radius: 3px; }
+
+    /* ===================== BACKGROUND MESH ===================== */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 10%, rgba(79, 172, 254, 0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 15%, rgba(168, 85, 247, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 60% at 80% 80%, rgba(255, 8, 68, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 20% 85%, rgba(56, 239, 125, 0.07) 0%, transparent 50%),
+        var(--bg-dark);
+    }
+
+    /* ===================== NAVBAR ===================== */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;
+      background: rgba(8, 12, 21, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(8, 12, 21, 0.95);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--font-heading);
+      font-size: 1.5rem; font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-logo-icon {
+      width: 40px; height: 40px;
+      background: var(--gradient-primary);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--text-bright); background: rgba(255,255,255,0.05); }
+    .nav-cta {
+      background: var(--gradient-primary) !important;
+      color: #000 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5) !important; background: rgba(0,0,0,0) !important; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--text-main);
+      border-radius: 2px; transition: all 0.3s ease;
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: var(--nav-h);
+      left: 0; right: 0;
+      background: rgba(8, 12, 21, 0.97);
+      backdrop-filter: blur(20px);
+      padding: 24px 5%; border-bottom: 1px solid var(--border-glass);
+      flex-direction: column; gap: 8px; z-index: 999;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      padding: 12px 16px; border-radius: 8px;
+      color: var(--text-muted); font-weight: 500;
+      transition: all 0.2s;
+    }
+    .mobile-menu a:hover { background: rgba(255,255,255,0.05); color: white; }
+
+    /* ===================== HERO ===================== */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: calc(var(--nav-h) + 60px) 5% 80px;
+      text-align: center;
+    }
+    .hero-inner { max-width: 860px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      background: rgba(0, 242, 254, 0.07);
+      color: var(--accent-cyan);
+      font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 28px;
+      animation: fadeInDown 0.6s ease;
+    }
+    .hero-badge .dot {
+      width: 7px; height: 7px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.7s ease 0.1s both;
+    }
+    .hero-title .gradient-text {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-title .gradient-fire {
+      background: var(--gradient-fire);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 640px; margin: 0 auto 40px;
+      line-height: 1.7;
+      animation: fadeInUp 0.7s ease 0.2s both;
+    }
+    .hero-btns {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      animation: fadeInUp 0.7s ease 0.3s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 32px;
+      background: var(--gradient-primary);
+      color: #000; font-family: var(--font-heading);
+      font-weight: 700; font-size: 1rem;
+      border: none; border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 25px rgba(0, 242, 254, 0.35);
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 35px rgba(0, 242, 254, 0.55);
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 32px;
+      background: transparent;
+      color: var(--text-main); font-family: var(--font-heading);
+      font-weight: 600; font-size: 1rem;
+      border: 1px solid var(--border-glass);
+      border-radius: 12px; cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+    .hero-stats {
+      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+      margin-top: 72px;
+      animation: fadeInUp 0.7s ease 0.45s both;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-family: var(--font-heading);
+      font-size: 2.2rem; font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-stat .label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+    .hero-divider { width: 1px; height: 48px; background: var(--border-glass); align-self: center; }
+
+    /* ===================== FLOATING CARDS (Hero Visual) ===================== */
+    .hero-visual {
+      margin-top: 80px;
+      position: relative;
+      animation: fadeInUp 0.8s ease 0.5s both;
+    }
+    .hero-phone-wrap {
+      display: flex; align-items: flex-end; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .mock-phone {
+      width: 220px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 28px;
+      padding: 20px 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), var(--glow-cyan);
+      position: relative;
+      transform-origin: bottom center;
+    }
+    .mock-phone.center { transform: scale(1.08); z-index: 2; }
+    .mock-phone.left { transform: rotate(-6deg) translateY(30px); opacity: 0.75; }
+    .mock-phone.right { transform: rotate(6deg) translateY(30px); opacity: 0.75; }
+    .phone-top { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .phone-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .phone-name { font-size: 0.8rem; font-weight: 600; }
+    .phone-sub { font-size: 0.7rem; color: var(--accent-green); }
+    .mock-bar {
+      height: 8px; border-radius: 4px;
+      margin: 6px 0;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+    .mock-bar-fill {
+      height: 100%; border-radius: 4px;
+      background: var(--gradient-primary);
+    }
+    .mock-metric { margin-top: 14px; }
+    .mock-metric-label { font-size: 0.65rem; color: var(--text-muted); }
+    .mock-metric-val { font-size: 1.3rem; font-weight: 700; color: var(--text-bright); }
+    .mock-badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 50px; font-size: 0.65rem; font-weight: 700;
+      background: rgba(56, 239, 125, 0.15); color: var(--accent-green);
+      border: 1px solid rgba(56, 239, 125, 0.3);
+      margin-top: 8px;
+    }
+    .mock-badge.warn {
+      background: rgba(246, 211, 101, 0.15); color: var(--accent-yellow);
+      border-color: rgba(246, 211, 101, 0.3);
+    }
+    .float-card {
+      position: absolute;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px; padding: 12px 16px;
+      font-size: 0.8rem; white-space: nowrap;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .float-card .fc-icon { font-size: 1.1rem; margin-bottom: 4px; }
+    .float-card .fc-val { font-size: 1.1rem; font-weight: 700; }
+    .float-card .fc-lbl { color: var(--text-muted); font-size: 0.7rem; }
+
+    /* ===================== SECTION COMMONS ===================== */
+    .section-pad { padding: 100px 5%; }
+    .section-pad-sm { padding: 70px 5%; }
+    .container { max-width: 1160px; margin: 0 auto; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent-cyan); margin-bottom: 16px;
+    }
+    .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 16px; }
+    .section-sub { color: var(--text-muted); font-size: 1.05rem; max-width: 580px; line-height: 1.7; }
+    .text-center { text-align: center; }
+    .text-center .section-sub { margin: 0 auto; }
+    .gradient-text { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* ===================== TRUSTED BY ===================== */
+    #trusted { padding: 50px 5%; border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
+    .trusted-label { text-align: center; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 28px; }
+    .trusted-logos {
+      display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap;
+    }
+    .trusted-logo {
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: 1.1rem; color: rgba(255,255,255,0.25);
+      transition: color 0.3s;
+      cursor: default; letter-spacing: -0.03em;
+    }
+    .trusted-logo:hover { color: rgba(255,255,255,0.55); }
+
+    /* ===================== FEATURES ===================== */
+    #features { background: transparent; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px; margin-top: 60px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px; padding: 32px;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at top left, rgba(0,242,254,0.05) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card:hover {
+      border-color: rgba(0, 242, 254, 0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,242,254,0.1);
+    }
+    .feature-icon {
+      width: 54px; height: 54px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 20px;
+    }
+    .feature-icon.cyan { background: rgba(0,242,254,0.12); }
+    .feature-icon.green { background: rgba(56,239,125,0.12); }
+    .feature-icon.pink { background: rgba(255,8,68,0.12); }
+    .feature-icon.purple { background: rgba(168,85,247,0.12); }
+    .feature-icon.yellow { background: rgba(246,211,101,0.12); }
+    .feature-icon.blue { background: rgba(79,172,254,0.12); }
+    .feature-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+    .feature-desc { color: var(--text-muted); font-size: 0.92rem; line-height: 1.65; }
+
+    /* ===================== HOW IT WORKS ===================== */
+    #how-it-works { background: rgba(15, 23, 44, 0.3); }
+    .steps-wrap {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0; margin-top: 60px; position: relative;
+    }
+    .steps-wrap::before {
+      content: '';
+      position: absolute; top: 40px; left: calc(50% / 4);
+      right: calc(50% / 4);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,242,254,0.35), transparent);
+      pointer-events: none;
+    }
+    .step-item { text-align: center; padding: 0 20px; position: relative; }
+    .step-num {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid rgba(0,242,254,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800;
+      color: var(--accent-cyan);
+      margin: 0 auto 24px;
+      box-shadow: 0 0 25px rgba(0,242,254,0.15);
+      transition: all 0.3s;
+    }
+    .step-item:hover .step-num {
+      background: rgba(0,242,254,0.1);
+      box-shadow: 0 0 40px rgba(0,242,254,0.3);
+    }
+    .step-icon { font-size: 2rem; }
+    .step-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+    .step-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ===================== PLANS / PRICING ===================== */
+    #pricing { }
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px; margin-top: 60px; align-items: start;
+    }
+    .plan-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 24px; padding: 36px 28px;
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .plan-card.popular {
+      border-color: rgba(0,242,254,0.4);
+      box-shadow: 0 0 0 1px rgba(0,242,254,0.15), var(--glow-cyan);
+    }
+    .plan-card:hover { transform: translateY(-6px); }
+    .plan-popular-badge {
+      position: absolute; top: 0; right: 24px;
+      background: var(--gradient-primary);
+      color: #000; font-size: 0.7rem; font-weight: 800;
+      padding: 5px 14px; border-radius: 0 0 12px 12px;
+      letter-spacing: 0.08em;
+    }
+    .plan-name { font-size: 1.1rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+    .plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px; }
+    .plan-price .currency { font-size: 1.4rem; font-weight: 700; color: var(--accent-cyan); }
+    .plan-price .amount { font-size: 3rem; font-weight: 900; color: var(--text-bright); line-height: 1; }
+    .plan-price .period { color: var(--text-muted); font-size: 0.9rem; }
+    .plan-save { font-size: 0.78rem; color: var(--accent-green); margin-bottom: 24px; font-weight: 600; }
+    .plan-divider { border: none; border-top: 1px solid var(--border-glass); margin: 20px 0; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .plan-features li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.9rem; color: var(--text-muted);
+    }
+    .plan-features li .check { color: var(--accent-green); font-size: 1rem; }
+    .plan-btn {
+      display: block; width: 100%;
+      padding: 14px; margin-top: 28px;
+      border-radius: 12px; border: none; cursor: pointer;
+      font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem;
+      transition: all 0.25s ease;
+    }
+    .plan-btn.primary { background: var(--gradient-primary); color: #000; box-shadow: 0 4px 20px rgba(0,242,254,0.3); }
+    .plan-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,242,254,0.5); }
+    .plan-btn.outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-glass); }
+    .plan-btn.outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+
+    /* ===================== TESTIMONIALS ===================== */
+    #testimonials { background: rgba(15, 23, 44, 0.3); }
+    .testimonials-slider {
+      margin-top: 60px;
+      position: relative; overflow: hidden;
+    }
+    .testimonials-track {
+      display: flex; gap: 24px;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .testimonial-card {
+      min-width: calc(33.33% - 16px);
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px; padding: 32px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover { border-color: rgba(255,255,255,0.15); }
+    .t-stars { color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 16px; }
+    .t-text {
+      color: var(--text-muted); font-size: 0.95rem;
+      line-height: 1.75; margin-bottom: 24px;
+      font-style: italic;
+    }
+    .t-text::before { content: '"'; font-size: 2rem; color: var(--accent-cyan); line-height: 0; vertical-align: -0.5em; }
+    .t-author { display: flex; align-items: center; gap: 12px; }
+    .t-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; flex-shrink: 0;
+    }
+    .t-name { font-weight: 700; font-size: 0.95rem; }
+    .t-role { color: var(--text-muted); font-size: 0.8rem; }
+    .slider-controls {
+      display: flex; gap: 12px; justify-content: center;
+      margin-top: 40px;
+    }
+    .slider-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--border-glass);
+      background: var(--bg-card);
+      color: var(--text-main); font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .slider-btn:hover { background: rgba(0,242,254,0.1); border-color: rgba(0,242,254,0.4); color: var(--accent-cyan); }
+    .slider-dots { display: flex; gap: 8px; align-items: center; }
+    .slider-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border-glass); cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .slider-dot.active { background: var(--accent-cyan); width: 24px; border-radius: 4px; }
+
+    /* ===================== APP SCREENSHOTS ===================== */
+    #screenshots {}
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px; margin-top: 60px;
+    }
+    .screenshot-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 24px; overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .screenshot-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .screenshot-header {
+      padding: 20px 20px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ss-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .ss-dot.r { background: #ff5f56; }
+    .ss-dot.y { background: #ffbd2e; }
+    .ss-dot.g { background: #27c93f; }
+    .screenshot-body { padding: 20px; }
+    .screenshot-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .screenshot-desc { color: var(--text-muted); font-size: 0.85rem; }
+    /* Mock UI elements inside screenshots */
+    .mock-ui { margin-top: 16px; }
+    .mock-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: 10px;
+      background: rgba(255,255,255,0.03); margin-bottom: 6px;
+      border: 1px solid var(--border-glass);
+      font-size: 0.78rem;
+    }
+    .mock-row .name { font-weight: 600; }
+    .mock-row .val { color: var(--accent-cyan); font-weight: 700; }
+    .mock-progress { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); margin: 10px 0; overflow: hidden; }
+    .mock-progress-fill { height: 100%; border-radius: 3px; }
+
+    /* ===================== FAQ ===================== */
+    #faq { background: rgba(15, 23, 44, 0.3); }
+    .faq-list { margin-top: 60px; max-width: 760px; margin-left: auto; margin-right: auto; }
+    .faq-item {
+      border: 1px solid var(--border-glass);
+      border-radius: 16px; overflow: hidden;
+      margin-bottom: 12px;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s;
+    }
+    .faq-item.open { border-color: rgba(0,242,254,0.3); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; cursor: pointer;
+      font-weight: 600; font-size: 1rem;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .faq-q:hover { color: var(--accent-cyan); }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid var(--border-glass);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+      transition: all 0.3s ease;
+      color: var(--accent-cyan);
+    }
+    .faq-item.open .faq-icon { background: rgba(0,242,254,0.1); transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+      color: var(--text-muted); font-size: 0.93rem; line-height: 1.7;
+      padding: 0 24px;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 24px 20px; }
+
+    /* ===================== SOCIAL MEDIA ===================== */
+    #social { }
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px; margin-top: 60px;
+    }
+    .social-card {
+      display: flex; align-items: center; gap: 16px;
+      padding: 24px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 18px;
+      transition: all 0.3s ease; cursor: pointer;
+      text-decoration: none; color: inherit;
+    }
+    .social-card:hover { transform: translateY(-3px); }
+    .social-icon-wrap {
+      width: 50px; height: 50px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .social-name { font-weight: 700; font-size: 1rem; }
+    .social-handle { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .social-card.insta:hover { border-color: rgba(225,48,108,0.4); box-shadow: 0 8px 30px rgba(225,48,108,0.15); }
+    .social-card.twitter:hover { border-color: rgba(29,161,242,0.4); box-shadow: 0 8px 30px rgba(29,161,242,0.15); }
+    .social-card.youtube:hover { border-color: rgba(255,0,0,0.4); box-shadow: 0 8px 30px rgba(255,0,0,0.15); }
+    .social-card.linkedin:hover { border-color: rgba(0,119,181,0.4); box-shadow: 0 8px 30px rgba(0,119,181,0.15); }
+    .social-card.facebook:hover { border-color: rgba(66,103,178,0.4); box-shadow: 0 8px 30px rgba(66,103,178,0.15); }
+    .social-card.telegram:hover { border-color: rgba(0,136,204,0.4); box-shadow: 0 8px 30px rgba(0,136,204,0.15); }
+
+    /* ===================== DOWNLOAD CTA ===================== */
+    #download {
+      text-align: center;
+      padding: 100px 5%;
+    }
+    .download-card {
+      max-width: 800px; margin: 0 auto;
+      background: linear-gradient(135deg, rgba(79,172,254,0.1) 0%, rgba(0,242,254,0.05) 100%);
+      border: 1px solid rgba(0,242,254,0.25);
+      border-radius: 32px; padding: 70px 48px;
+      position: relative; overflow: hidden;
+    }
+    .download-card::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(circle, rgba(0,242,254,0.06) 0%, transparent 60%);
+    }
+    .download-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 16px; }
+    .download-sub { color: var(--text-muted); margin-bottom: 40px; font-size: 1.05rem; }
+    .download-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .store-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 14px 28px;
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      transition: all 0.25s ease; color: var(--text-main);
+    }
+    .store-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .store-btn .store-icon { font-size: 1.6rem; }
+    .store-btn .store-text .s-lbl { font-size: 0.7rem; color: var(--text-muted); }
+    .store-btn .store-text .s-name { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; }
+
+    /* ===================== TERMS & CONDITIONS ===================== */
+    #terms { background: rgba(15, 23, 44, 0.3); }
+    .terms-container { max-width: 860px; margin: 60px auto 0; }
+    .terms-section { margin-bottom: 32px; }
+    .terms-section h3 { font-size: 1.15rem; margin-bottom: 10px; color: var(--accent-cyan); }
+    .terms-section p, .terms-section li { color: var(--text-muted); font-size: 0.92rem; line-height: 1.75; }
+    .terms-section ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+    .terms-last-updated { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 36px; }
+
+    /* ===================== FOOTER ===================== */
+    #footer {
+      padding: 60px 5% 32px;
+      border-top: 1px solid var(--border-glass);
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 60px;
+    }
+    .footer-brand .logo { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+    .footer-brand p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; max-width: 300px; }
+    .footer-brand .social-row { display: flex; gap: 10px; margin-top: 20px; }
+    .footer-social-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--border-glass);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; transition: all 0.2s;
+      color: var(--text-muted); cursor: pointer;
+    }
+    .footer-social-icon:hover { background: rgba(255,255,255,0.06); color: var(--text-bright); border-color: rgba(255,255,255,0.2); }
+    .footer-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 16px; color: var(--text-bright); }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { color: var(--text-muted); font-size: 0.88rem; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--accent-cyan); }
+    .footer-bottom { border-top: 1px solid var(--border-glass); padding-top: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .footer-bottom p { color: var(--text-muted); font-size: 0.82rem; }
+    .footer-bottom-links { display: flex; gap: 20px; }
+    .footer-bottom-links a { color: var(--text-muted); font-size: 0.82rem; transition: color 0.2s; }
+    .footer-bottom-links a:hover { color: var(--accent-cyan); }
+
+    /* ===================== ANIMATIONS ===================== */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes floatLeft { 0%, 100% { transform: rotate(-6deg) translateY(30px); } 50% { transform: rotate(-6deg) translateY(18px); } }
+    @keyframes floatRight { 0%, 100% { transform: rotate(6deg) translateY(30px); } 50% { transform: rotate(6deg) translateY(18px); } }
+    @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    .mock-phone.center { animation: float 4s ease-in-out infinite; }
+    .mock-phone.left { animation: floatLeft 4.5s ease-in-out infinite 0.5s; }
+    .mock-phone.right { animation: floatRight 4.2s ease-in-out infinite 1s; }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.7s cubic-bezier(0.4,0,0.2,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .testimonial-card { min-width: calc(80% - 12px); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .hero-phone-wrap .mock-phone.left, .hero-phone-wrap .mock-phone.right { display: none; }
+    }
+    @media (max-width: 600px) {
+      .section-pad { padding: 70px 5%; }
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+      .testimonial-card { min-width: 90%; }
+      .hero-stat { flex: 1; min-width: 80px; }
+      .hero-divider { display: none; }
+      .hero-stats { gap: 20px; }
+    }
+
+    /* ===================== BACK TO TOP ===================== */
+    #back-to-top {
+      position: fixed; bottom: 28px; right: 28px; z-index: 999;
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--gradient-primary);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #000;
+      box-shadow: 0 4px 20px rgba(0,242,254,0.35);
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+    #back-to-top.show { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { transform: translateY(-3px) !important; box-shadow: 0 8px 30px rgba(0,242,254,0.5); }
+
+    /* Neon separator */
+    .neon-sep {
+      width: 60px; height: 3px; border-radius: 2px;
+      background: var(--gradient-primary);
+      margin: 0 auto 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-icon">⚡</div>
+    Fitmaniac
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#terms">T&amp;C</a></li>
+    <li><a href="#download" class="nav-cta">Get the App</a></li>
+  </ul>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features">Features</a>
+  <a href="#how-it-works">How It Works</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#testimonials">Reviews</a>
+  <a href="#faq">FAQ</a>
+  <a href="#terms">Terms &amp; Conditions</a>
+  <a href="#download" style="background: var(--gradient-primary); color: #000; font-weight:700; text-align:center;">Get the App</a>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Now live across India — Join the movement
+    </div>
+    <h1 class="hero-title">
+      Train Smarter.<br />
+      <span class="gradient-text">Never Miss a</span> <span class="gradient-fire">Rep.</span>
+    </h1>
+    <p class="hero-sub">Fitmaniac is India's premium gym partner network — connecting athletes, gym owners, and trainers through smart check-ins, flexible workout slots, and a gamified fitness community.</p>
+    <div class="hero-btns">
+      <a href="#download" class="btn-primary" id="hero-cta-btn">⚡ Download Free App</a>
+      <a href="#features" class="btn-outline">🎯 Explore Features</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">50+</div>
+        <div class="label">Partner Gyms</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="num">10K+</div>
+        <div class="label">Active Athletes</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="num">₹12K</div>
+        <div class="label">Yearly Plan Savings</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="num">4.9★</div>
+        <div class="label">Member Rating</div>
+      </div>
+    </div>
+
+    <!-- App Preview Cards -->
+    <div class="hero-visual">
+      <div class="hero-phone-wrap">
+        <!-- Left card -->
+        <div class="mock-phone left">
+          <div class="phone-top">
+            <div class="phone-avatar">🏋️</div>
+            <div>
+              <div class="phone-name">Gate Terminal</div>
+              <div class="phone-sub">● OPEN / UNLOCKED</div>
+            </div>
+          </div>
+          <div class="mock-bar"><div class="mock-bar-fill" style="width:78%; background: linear-gradient(90deg,#38ef7d,#4facfe)"></div></div>
+          <div class="mock-metric"><div class="mock-metric-label">Today's Check-ins</div><div class="mock-metric-val">47</div></div>
+          <span class="mock-badge">🟢 Active Pass</span>
+        </div>
+
+        <!-- Center card -->
+        <div class="mock-phone center">
+          <div class="phone-top">
+            <div class="phone-avatar" style="background:linear-gradient(135deg,#ff0844,#ffb199)">👤</div>
+            <div>
+              <div class="phone-name">Rahul Sharma</div>
+              <div class="phone-sub">Yearly Member</div>
+            </div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:4px;">Weekly Streak</div>
+          <div style="display:flex;gap:6px;margin-bottom:14px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#000;">M</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#000;">T</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#000;">W</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-muted);">T</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-muted);">F</div>
+          </div>
+          <div class="mock-metric"><div class="mock-metric-label">Active Streak</div><div class="mock-metric-val" style="color:var(--accent-cyan);">🔥 14 Days</div></div>
+          <div class="mock-bar" style="margin-top:10px;"><div class="mock-bar-fill" style="width:65%;background:linear-gradient(90deg,#f6d365,#ff0844);"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-muted);margin-top:4px;"><span>Current Slot: 6AM–8AM</span><span>65%</span></div>
+          <span class="mock-badge" style="margin-top:12px;">🏆 Bronze Badge</span>
+        </div>
+
+        <!-- Right card -->
+        <div class="mock-phone right">
+          <div class="phone-top">
+            <div class="phone-avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d)">🎯</div>
+            <div>
+              <div class="phone-name">Live Challenge</div>
+              <div class="phone-sub">HRX Circuit</div>
+            </div>
+          </div>
+          <div class="mock-row"><span class="name">Marcus D.</span><span class="val">12:45</span></div>
+          <div class="mock-row"><span class="name">Rahul S.</span><span class="val">13:12</span></div>
+          <div class="mock-row"><span class="name">Priya P.</span><span class="val">14:05</span></div>
+          <span class="mock-badge warn">⏱️ Log Your Time</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TRUSTED BY ===================== -->
+<div id="trusted">
+  <div class="container">
+    <p class="trusted-label">Trusted by gyms across India</p>
+    <div class="trusted-logos">
+      <div class="trusted-logo">FITFREAK CENTER</div>
+      <div class="trusted-logo">IRON REPUBLIC</div>
+      <div class="trusted-logo">KORAMANGALA FITNESS</div>
+      <div class="trusted-logo">PULSE GYM</div>
+      <div class="trusted-logo">TITAN LABS</div>
+      <div class="trusted-logo">ZEN FITNESS HUB</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FEATURES ===================== -->
+<section id="features" class="section-pad">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">⚡ Features</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Everything Your Gym Needs,<br /><span class="gradient-text">All in One Platform</span></h2>
+      <p class="section-sub">From smart QR check-ins and flexible slots to real-time analytics and gamified community challenges — Fitmaniac covers it all.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon cyan">🚪</div>
+        <div class="feature-title">Smart Gate Scanner</div>
+        <p class="feature-desc">Dynamic QR codes with rotating security tokens and a 30-second countdown refresh. No pass sharing, zero fraud. Instant audio feedback on entry.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon green">⏰</div>
+        <div class="feature-title">Flexible 2-Hour Slots</div>
+        <p class="feature-desc">Athletes book their preferred 2-hour workout window. Live occupancy meters show crowd density in real-time so you can pick the perfect slot.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon pink">⚡</div>
+        <div class="feature-title">Instant UPI Payments</div>
+        <p class="feature-desc">Renew memberships instantly via UPI deep-links and dynamic BHIM QR codes — directly inside the app. Monthly ₹1,499 | Quarterly ₹3,999 | Yearly ₹12,999.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon purple">🏆</div>
+        <div class="feature-title">Gamified Challenges</div>
+        <p class="feature-desc">Strava-style segment challenges where members compete on leaderboards. Log your circuit times, earn personal bests, and climb the co-member rankings.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon yellow">🔥</div>
+        <div class="feature-title">Streak & Badge System</div>
+        <p class="feature-desc">Track consecutive workout days and earn Bronze, Silver, and Gold Legend badges. A visual badge shelf keeps you motivated every single session.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon blue">📊</div>
+        <div class="feature-title">Analytics & Reports</div>
+        <p class="feature-desc">Gym owners get real-time SVG charts, pass distribution doughnut rings, attendance trends, and one-click Excel/CSV monthly member reports.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon cyan">💬</div>
+        <div class="feature-title">Community Hub</div>
+        <p class="feature-desc">A co-member forum with pinned announcements, live lobby chat, bulletin boards, and gym-owner broadcast capabilities — your gym's social layer.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon green">📅</div>
+        <div class="feature-title">Carry-Forward Days</div>
+        <p class="feature-desc">Yearly members get up to 30 carry-forward absent days so illness or travel never wastes your subscription. Transparent, automated calculations.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon pink">🌐</div>
+        <div class="feature-title">Offline Sync Engine</div>
+        <p class="feature-desc">LocalStorage-backed offline queuing ensures gym operations never stop during internet outages. Background auto-reconciliation when connectivity returns.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section id="how-it-works" class="section-pad">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">🔷 How It Works</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Three Portals, <span class="gradient-text">One Ecosystem</span></h2>
+      <p class="section-sub">Fitmaniac powers three distinct experiences that work together seamlessly in real-time.</p>
+    </div>
+
+    <div style="margin-top:60px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start;" class="reveal">
+      <div>
+        <div class="section-tag" style="margin-bottom:20px;">👑 For Super Admins</div>
+        <div class="steps-wrap" style="grid-template-columns:1fr; gap:20px;">
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">01</div>
+              <div>
+                <div class="step-title">Onboard Gym Partners</div>
+                <div class="step-desc">Register partner gyms with coordinates, operating hours, barcode tokens, and payment toggles via the premium admin console.</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">02</div>
+              <div>
+                <div class="step-title">Monitor the Network</div>
+                <div class="step-desc">View SVG growth analytics, export monthly gym partner CSV reports, and manage the full network in real-time.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-tag" style="margin-top:36px;margin-bottom:20px;">🏢 For Gym Owners</div>
+        <div class="steps-wrap" style="grid-template-columns:1fr; gap:20px;">
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">01</div>
+              <div>
+                <div class="step-title">Manage Members</div>
+                <div class="step-desc">Register athletes, approve offline cash subscriptions, manage carry-forward days, and export member ledgers.</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">02</div>
+              <div>
+                <div class="step-title">Schedule Special Classes</div>
+                <div class="step-desc">Post PRO Zumba, HRX, and Yoga Masterclasses. Broadcast announcements and moderate the community forum.</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">03</div>
+              <div>
+                <div class="step-title">Operate the Gate</div>
+                <div class="step-desc">Scan dynamic QR codes at the gate terminal. Green screen for access, red buzz for denial. Print barcode gate posters in one click.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-tag" style="margin-bottom:20px;">📱 For Athletes</div>
+        <div class="steps-wrap" style="grid-template-columns:1fr; gap:20px;">
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">01</div>
+              <div>
+                <div class="step-title">Join a Gym</div>
+                <div class="step-desc">Pick a Fitmaniac partner gym near you. Register with your gym owner to get your digital membership and unique QR pass.</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">02</div>
+              <div>
+                <div class="step-title">Book Your Slot</div>
+                <div class="step-desc">Choose your preferred 2-hour flexible workout slot. View live occupancy heatmaps to avoid peak crowds.</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">03</div>
+              <div>
+                <div class="step-title">Check In with QR</div>
+                <div class="step-desc">Show your dynamic rotating QR pass at the gate. Secure, tamper-proof, refreshes every 30 seconds. Audio tone confirms your entry.</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-item" style="text-align:left; padding:0;">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div class="step-num" style="width:48px;height:48px;font-size:1.1rem;flex-shrink:0;">04</div>
+              <div>
+                <div class="step-title">Track &amp; Compete</div>
+                <div class="step-desc">Maintain your workout streak, earn badges, compete in segment challenges, and renew your membership instantly via UPI — all in the app.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCREENSHOTS / APP SHOWCASE ===================== -->
+<section id="screenshots" class="section-pad" style="background:rgba(15,23,44,0.3);">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">📱 App Showcase</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Premium Dashboards, <span class="gradient-text">Zero Complexity</span></h2>
+      <p class="section-sub">Every screen crafted for clarity and speed. Glassmorphic Aurora design, dark-mode first, fully responsive.</p>
+    </div>
+    <div class="screenshots-grid">
+      <div class="screenshot-card reveal reveal-delay-1">
+        <div class="screenshot-header">
+          <div class="ss-dot r"></div><div class="ss-dot y"></div><div class="ss-dot g"></div>
+          <span style="font-size:0.78rem;color:var(--text-muted);margin-left:8px;">Member Dashboard</span>
+        </div>
+        <div class="screenshot-body">
+          <div class="screenshot-title">🏋️ Your Fitness Summary</div>
+          <div class="screenshot-desc">Weekly attendance, streak counter, slot status, and UPI renewal — at a glance.</div>
+          <div class="mock-ui">
+            <div style="text-align:center;padding:16px 0;">
+              <div style="font-size:2rem;font-weight:900;color:var(--accent-cyan);">🔥 14</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Day Streak</div>
+            </div>
+            <div class="mock-progress"><div class="mock-progress-fill" style="width:65%;background:linear-gradient(90deg,#4facfe,#00f2fe)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted)"><span>Progress this week</span><span>65%</span></div>
+            <div class="mock-row" style="margin-top:12px;"><span class="name">Current Slot</span><span class="val">6AM – 8AM</span></div>
+            <div class="mock-row"><span class="name">Plan</span><span class="val" style="color:var(--accent-green);">Yearly ✓</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-card reveal reveal-delay-2">
+        <div class="screenshot-header">
+          <div class="ss-dot r"></div><div class="ss-dot y"></div><div class="ss-dot g"></div>
+          <span style="font-size:0.78rem;color:var(--text-muted);margin-left:8px;">Gym Owner Portal</span>
+        </div>
+        <div class="screenshot-body">
+          <div class="screenshot-title">🏢 Manage Your Gym</div>
+          <div class="screenshot-desc">Member registrations, subscription approvals, class scheduling, and gate control — one dashboard.</div>
+          <div class="mock-ui">
+            <div class="mock-row"><span class="name">Rahul Sharma</span><span class="val" style="color:var(--accent-green);">Active</span></div>
+            <div class="mock-row"><span class="name">Priya Patel</span><span class="val" style="color:var(--accent-pink);">Expired</span></div>
+            <div class="mock-row"><span class="name">Marcus Dutt</span><span class="val" style="color:var(--accent-green);">Active</span></div>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+              <div style="flex:1;padding:8px;border-radius:8px;background:rgba(56,239,125,0.1);border:1px solid rgba(56,239,125,0.2);text-align:center;font-size:0.7rem;font-weight:700;color:var(--accent-green);">📊 Export CSV</div>
+              <div style="flex:1;padding:8px;border-radius:8px;background:rgba(0,242,254,0.1);border:1px solid rgba(0,242,254,0.2);text-align:center;font-size:0.7rem;font-weight:700;color:var(--accent-cyan);">🖨️ Print Poster</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-card reveal reveal-delay-3">
+        <div class="screenshot-header">
+          <div class="ss-dot r"></div><div class="ss-dot y"></div><div class="ss-dot g"></div>
+          <span style="font-size:0.78rem;color:var(--text-muted);margin-left:8px;">Challenge Leaderboard</span>
+        </div>
+        <div class="screenshot-body">
+          <div class="screenshot-title">🏆 Segment Challenges</div>
+          <div class="screenshot-desc">Real-time co-member leaderboards with personal best validation. Compete, improve, repeat.</div>
+          <div class="mock-ui">
+            <div class="mock-row" style="border-color:rgba(246,211,101,0.3);">
+              <span class="name">🥇 Marcus D.</span><span class="val" style="color:var(--accent-yellow);">12:45</span>
+            </div>
+            <div class="mock-row" style="border-color:rgba(0,242,254,0.3);">
+              <span class="name">🥈 Rahul S.</span><span class="val">13:12</span>
+            </div>
+            <div class="mock-row">
+              <span class="name">🥉 Priya P.</span><span class="val">14:05</span>
+            </div>
+            <div style="margin-top:12px;padding:10px;border-radius:8px;background:rgba(0,242,254,0.06);border:1px solid rgba(0,242,254,0.2);font-size:0.72rem;color:var(--accent-cyan);text-align:center;font-weight:700;">⏱️ TAP TO LOG YOUR TIME</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section id="pricing" class="section-pad">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">💳 Membership Plans</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Transparent Pricing,<br /><span class="gradient-text">No Hidden Costs</span></h2>
+      <p class="section-sub">Choose a plan that fits your fitness journey. All plans include access to the full Fitmaniac platform.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card reveal reveal-delay-1">
+        <div class="plan-name">Monthly</div>
+        <div class="plan-price">
+          <span class="currency">₹</span>
+          <span class="amount">1,499</span>
+          <span class="period">/ month</span>
+        </div>
+        <div class="plan-save">Great for trying out Fitmaniac</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Full gym access (2-hr flexible slots)</li>
+          <li><span class="check">✓</span> Dynamic QR check-in pass</li>
+          <li><span class="check">✓</span> Community hub access</li>
+          <li><span class="check">✓</span> Special class bookings</li>
+          <li><span class="check">✓</span> UPI / Offline payment</li>
+          <li style="color:rgba(148,163,184,0.4)"><span style="color:rgba(148,163,184,0.35)">✗</span> Carry-forward absent days</li>
+          <li style="color:rgba(148,163,184,0.4)"><span style="color:rgba(148,163,184,0.35)">✗</span> Priority slot selection</li>
+        </ul>
+        <button class="plan-btn outline" id="plan-monthly-btn">Get Started</button>
+      </div>
+
+      <div class="plan-card popular reveal reveal-delay-2">
+        <div class="plan-popular-badge">MOST POPULAR</div>
+        <div class="plan-name">Quarterly</div>
+        <div class="plan-price">
+          <span class="currency">₹</span>
+          <span class="amount">3,999</span>
+          <span class="period">/ 3 months</span>
+        </div>
+        <div class="plan-save">💰 Save ₹498 vs monthly</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Monthly</li>
+          <li><span class="check">✓</span> 2-hr flexible slots</li>
+          <li><span class="check">✓</span> Streak &amp; badge tracking</li>
+          <li><span class="check">✓</span> Segment challenge access</li>
+          <li><span class="check">✓</span> Community moderation access</li>
+          <li><span class="check">✓</span> Priority support</li>
+          <li style="color:rgba(148,163,184,0.4)"><span style="color:rgba(148,163,184,0.35)">✗</span> Carry-forward absent days</li>
+        </ul>
+        <button class="plan-btn primary" id="plan-quarterly-btn">⚡ Choose Quarterly</button>
+      </div>
+
+      <div class="plan-card reveal reveal-delay-3">
+        <div class="plan-name">Yearly</div>
+        <div class="plan-price">
+          <span class="currency">₹</span>
+          <span class="amount">12,999</span>
+          <span class="period">/ year</span>
+        </div>
+        <div class="plan-save">🏆 Best value — Save ₹4,989 vs monthly</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Quarterly</li>
+          <li><span class="check">✓</span> Up to 30 carry-forward absent days</li>
+          <li><span class="check">✓</span> Priority slot selection</li>
+          <li><span class="check">✓</span> Gold member badge</li>
+          <li><span class="check">✓</span> Exclusive yearly challenges</li>
+          <li><span class="check">✓</span> Dedicated support line</li>
+          <li><span class="check">✓</span> Early access to new features</li>
+        </ul>
+        <button class="plan-btn outline" id="plan-yearly-btn">Get Annual Access</button>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:28px;color:var(--text-muted);font-size:0.85rem;">All pricing is per gym location. Plans are managed through your gym owner. <a href="#faq" style="color:var(--accent-cyan);">Learn more →</a></p>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section id="testimonials" class="section-pad">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">❤️ Testimonials</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Athletes Love <span class="gradient-text">Fitmaniac</span></h2>
+      <p class="section-sub">Hear from real members and gym owners who have transformed their fitness journey with our platform.</p>
+    </div>
+    <div class="testimonials-slider reveal" style="margin-top:60px;">
+      <div class="testimonials-track" id="testimonialsTrack">
+
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text"> The carry-forward days feature alone is worth the yearly plan. I travel frequently for work and used to lose so many gym days. Fitmaniac actually respects my money. Streak tracking keeps me accountable like nothing else has before.</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">RS</div>
+            <div>
+              <div class="t-name">Rahul Sharma</div>
+              <div class="t-role">Software Engineer · Koramangala</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text"> Running a gym used to mean drowning in spreadsheets. Now I just open the dashboard, approve renewals, schedule a Zumba class, and export the monthly report in seconds. The gate scanner terminal is a game-changer for security.</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d);">SD</div>
+            <div>
+              <div class="t-name">Sarah D'Souza</div>
+              <div class="t-role">Gym Owner · Fitfreak Center, Bangalore</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text"> I won the HRX Circuit challenge last month! The leaderboard is so motivating — seeing your name move up the rankings after logging a personal best is addictive in the best way. The UPI renewal is instant and seamless too.</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background:linear-gradient(135deg,#ff0844,#ffb199);">MD</div>
+            <div>
+              <div class="t-name">Marcus Dutt</div>
+              <div class="t-role">Fitness Enthusiast · Quarterly Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★☆</div>
+          <p class="t-text"> As a yoga trainer, I love that I can schedule my Breathwork Masterclass sessions directly on the platform and see enrollments in real-time. The community moderation tools make it easy to keep conversations healthy and focused.</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">AD</div>
+            <div>
+              <div class="t-name">Acharya Dev</div>
+              <div class="t-role">Yoga Trainer · Zen Fitness Hub</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text"> The occupancy heatmap is brilliant! I shifted my workout to the 6AM slot after seeing how crowded the evening sessions get. I get the weights I need without waiting. The dynamic QR pass is super fast and never fails at the gate.</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background:linear-gradient(135deg,#f6d365,#fda085);">PP</div>
+            <div>
+              <div class="t-name">Priya Patel</div>
+              <div class="t-role">Marketing Manager · Monthly Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text"> Switching our gym to Fitmaniac was the best business decision this year. Membership renewals went up 40% because the UPI checkout is so frictionless. The offline sync means we never lose data even when the internet flickers.</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background:linear-gradient(135deg,#00f2fe,#4facfe);">SN</div>
+            <div>
+              <div class="t-name">Shayan Nair</div>
+              <div class="t-role">Gym Owner · Iron Republic, Mumbai</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="slider-controls">
+        <button class="slider-btn" id="sliderPrev" aria-label="Previous testimonials">&#8592;</button>
+        <div class="slider-dots" id="sliderDots"></div>
+        <button class="slider-btn" id="sliderNext" aria-label="Next testimonials">&#8594;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SOCIAL MEDIA ===================== -->
+<section id="social" class="section-pad" style="background:rgba(15,23,44,0.3);">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">📲 Connect With Us</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Join the <span class="gradient-text">Fitmaniac Community</span></h2>
+      <p class="section-sub">Follow us on social media for workout inspiration, feature updates, challenge announcements, and member spotlights.</p>
+    </div>
+    <div class="social-grid">
+      <a href="https://www.instagram.com/fitmaniac.in" target="_blank" rel="noopener" class="social-card insta reveal reveal-delay-1" id="social-instagram">
+        <div class="social-icon-wrap" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">📸</div>
+        <div>
+          <div class="social-name">Instagram</div>
+          <div class="social-handle">@fitmaniac.in</div>
+        </div>
+      </a>
+      <a href="https://twitter.com/fitmaniac_in" target="_blank" rel="noopener" class="social-card twitter reveal reveal-delay-2" id="social-twitter">
+        <div class="social-icon-wrap" style="background:linear-gradient(135deg,#1DA1F2,#0d8bd9);">🐦</div>
+        <div>
+          <div class="social-name">Twitter / X</div>
+          <div class="social-handle">@fitmaniac_in</div>
+        </div>
+      </a>
+      <a href="https://www.youtube.com/@fitmaniac" target="_blank" rel="noopener" class="social-card youtube reveal reveal-delay-3" id="social-youtube">
+        <div class="social-icon-wrap" style="background:linear-gradient(135deg,#FF0000,#cc0000);">▶️</div>
+        <div>
+          <div class="social-name">YouTube</div>
+          <div class="social-handle">@fitmaniac</div>
+        </div>
+      </a>
+      <a href="https://www.linkedin.com/company/fitmaniac" target="_blank" rel="noopener" class="social-card linkedin reveal reveal-delay-1" id="social-linkedin">
+        <div class="social-icon-wrap" style="background:linear-gradient(135deg,#0077b5,#005e93);">💼</div>
+        <div>
+          <div class="social-name">LinkedIn</div>
+          <div class="social-handle">Fitmaniac Official</div>
+        </div>
+      </a>
+      <a href="https://www.facebook.com/fitmaniac.in" target="_blank" rel="noopener" class="social-card facebook reveal reveal-delay-2" id="social-facebook">
+        <div class="social-icon-wrap" style="background:linear-gradient(135deg,#4267B2,#365899);">📘</div>
+        <div>
+          <div class="social-name">Facebook</div>
+          <div class="social-handle">Fitmaniac India</div>
+        </div>
+      </a>
+      <a href="https://t.me/fitmaniac_official" target="_blank" rel="noopener" class="social-card telegram reveal reveal-delay-3" id="social-telegram">
+        <div class="social-icon-wrap" style="background:linear-gradient(135deg,#0088CC,#006fa5);">✈️</div>
+        <div>
+          <div class="social-name">Telegram</div>
+          <div class="social-handle">Fitmaniac Official</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DOWNLOAD CTA ===================== -->
+<section id="download" class="section-pad">
+  <div class="container">
+    <div class="download-card reveal">
+      <div class="neon-sep"></div>
+      <h2 class="download-title">Start Your Fitness Journey<br /><span class="gradient-text">Today — For Free</span></h2>
+      <p class="download-sub">Download the Fitmaniac app, connect with your nearest gym partner, and transform your fitness experience from day one.</p>
+      <div class="download-btns">
+        <a href="#" class="store-btn" id="playstore-btn">
+          <div class="store-icon">▶</div>
+          <div class="store-text">
+            <div class="s-lbl">GET IT ON</div>
+            <div class="s-name">Google Play</div>
+          </div>
+        </a>
+        <a href="#" class="store-btn" id="appstore-btn">
+          <div class="store-icon">🍎</div>
+          <div class="store-text">
+            <div class="s-lbl">DOWNLOAD ON THE</div>
+            <div class="s-name">App Store</div>
+          </div>
+        </a>
+        <a href="#" class="store-btn" id="webapp-btn">
+          <div class="store-icon">🌐</div>
+          <div class="store-text">
+            <div class="s-lbl">USE IN YOUR</div>
+            <div class="s-name">Browser</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section id="faq" class="section-pad">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">❓ FAQ</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      <p class="section-sub">Got questions? We've got answers. Reach out on social if you need more help.</p>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item" data-faq="0">
+        <div class="faq-q">What is Fitmaniac?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Fitmaniac is a comprehensive gym management and member experience platform for India. It connects gym owners (via the Gym Owner Portal), super administrators (via the Admin Console), and athletes (via the Customer Mobile App) in one seamlessly synchronized ecosystem powered by real-time data sync, smart QR check-ins, and gamified fitness challenges.</div>
+      </div>
+
+      <div class="faq-item" data-faq="1">
+        <div class="faq-q">How do I join a Fitmaniac gym?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Visit a Fitmaniac partner gym near you and ask them to register you on the platform. Your gym owner will create your member profile, assign a membership plan (Monthly/Quarterly/Yearly), and issue your unique digital QR pass. Once set up, you can log in to the Fitmaniac Customer App to access all features instantly.</div>
+      </div>
+
+      <div class="faq-item" data-faq="2">
+        <div class="faq-q">Is the QR check-in system secure?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Yes. Fitmaniac uses Dynamic Security QR Codes that rotate with a new unique token every 30 seconds. Each code is cryptographically tied to your member ID and gym token (e.g., FITFREAK_001), making pass-sharing physically impossible. The gate terminal plays an audio chime on access granted and a buzzer on denial.</div>
+      </div>
+
+      <div class="faq-item" data-faq="3">
+        <div class="faq-q">What are carry-forward absent days?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Carry-forward absent days are compensation days added to your subscription for days you couldn't attend the gym due to illness, travel, or personal reasons. This feature is exclusively available to Yearly plan subscribers and is capped at a maximum of 30 days per year. Monthly and Quarterly members are not eligible for carry-forward days.</div>
+      </div>
+
+      <div class="faq-item" data-faq="4">
+        <div class="faq-q">How do flexible 2-hour workout slots work?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Instead of fixed session times, Fitmaniac lets you book a preferred 2-hour window for your daily workouts (e.g., 6AM–8AM, 8AM–10AM, etc.). Each slot displays a live occupancy meter showing current crowd density — green for optimal, yellow for moderate, and red for peak. This helps you plan your visit to avoid crowded periods and get the most out of your workout.</div>
+      </div>
+
+      <div class="faq-item" data-faq="5">
+        <div class="faq-q">How can I renew my gym membership?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Membership renewal is simple. When your pass is nearing expiry, a glowing amber banner appears in your app. Tap "⚡ PAY INSTANT UPI" to launch the checkout modal, which generates a dynamic transaction reference ID and a BHIM UPI QR code for instant payment. Alternatively, you can pay cash at the gym desk and your owner will mark it as an offline payment in the system.</div>
+      </div>
+
+      <div class="faq-item" data-faq="6">
+        <div class="faq-q">What are Segment Challenges?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Segment Challenges are timed fitness circuits (inspired by Strava segments) that your gym owner publishes for all members. Athletes complete the circuit, log their time using the in-app stopwatch modal, and compete on a real-time leaderboard. The system validates personal bests automatically and updates your position among co-members. Example: "HRX 15-Min Strength & Conditioning Circuit."</div>
+      </div>
+
+      <div class="faq-item" data-faq="7">
+        <div class="faq-q">Does Fitmaniac work without an internet connection?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Yes. Fitmaniac features a robust LocalStorage-backed Offline Sync Engine. All critical data (member rosters, classes, challenges) is cached locally. If the server goes offline, actions like registrations and renewals are queued in an offline buffer. When connectivity returns, a background sync worker automatically replays the queued operations to the server and reconciles all data — ensuring zero data loss for gym owners.</div>
+      </div>
+
+      <div class="faq-item" data-faq="8">
+        <div class="faq-q">How do gym owners partner with Fitmaniac?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Gym owners can apply to become a Fitmaniac partner by reaching out to us via the contact information below or through our social media channels. Once approved, a Super Admin will register your gym on the platform, assign your unique barcode token (e.g., FITFREAK_001), configure payment methods, and onboard you to the Gym Owner Portal. The process typically takes 24–48 hours.</div>
+      </div>
+
+      <div class="faq-item" data-faq="9">
+        <div class="faq-q">What is the Streak & Badge System?<div class="faq-icon">+</div></div>
+        <div class="faq-a">Fitmaniac tracks your consecutive workout days to build a visible streak counter. Reaching milestone days earns you digital achievement badges: 🥉 Bronze Badge at 5 days, 🥈 Silver Badge at 10 days, and 🥇 Gold Legend Badge at 30 days. Earned badges are displayed on a visual badge shelf in your workout dashboard, making your dedication visible and rewarding your consistency.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TERMS & CONDITIONS ===================== -->
+<section id="terms" class="section-pad" style="background:rgba(15,23,44,0.3);">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-tag">📋 Legal</span>
+      <div class="neon-sep"></div>
+      <h2 class="section-title">Terms & <span class="gradient-text">Conditions</span></h2>
+    </div>
+    <div class="terms-container reveal">
+      <p class="terms-last-updated">Last Updated: June 2026 &nbsp;|&nbsp; Effective Date: June 2026</p>
+
+      <div class="terms-section">
+        <h3>1. Acceptance of Terms</h3>
+        <p>By downloading, installing, registering on, or using the Fitmaniac application, website, or any related services (collectively, the "Platform"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, you may not access or use the Platform. These Terms constitute a legally binding agreement between you ("User") and Fitmaniac ("Company", "we", "us", or "our").</p>
+      </div>
+
+      <div class="terms-section">
+        <h3>2. Platform Description</h3>
+        <p>Fitmaniac is a gym management and member experience platform that provides:</p>
+        <ul>
+          <li>A Customer Mobile Application for gym members to manage memberships, check-ins, and fitness tracking.</li>
+          <li>A Gym Owner (Client) Portal for partner gyms to manage members, classes, and operations.</li>
+          <li>A Super Admin Console for network-wide gym partner management.</li>
+          <li>Backend API services for data synchronization and payment processing.</li>
+        </ul>
+      </div>
+
+      <div class="terms-section">
+        <h3>3. Eligibility &amp; Registration</h3>
+        <ul>
+          <li>You must be at least 16 years of age to use the Fitmaniac platform.</li>
+          <li>Registration for the Customer App requires enrollment through a Fitmaniac partner gym.</li>
+          <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+          <li>You agree to provide accurate, current, and complete information during registration.</li>
+          <li>Fitmaniac reserves the right to refuse service, terminate accounts, or remove content at its discretion.</li>
+        </ul>
+      </div>
+
+      <div class="terms-section">
+        <h3>4. Membership Plans &amp; Payments</h3>
+        <ul>
+          <li><strong>Plans:</strong> Fitmaniac offers Monthly (₹1,499), Quarterly (₹3,999), and Yearly (₹12,999) membership plans, managed through your gym partner.</li>
+          <li><strong>UPI Payments:</strong> Digital payments via UPI are processed securely. Fitmaniac does not store payment card or UPI credentials.</li>
+          <li><strong>Offline Payments:</strong> Cash payments are accepted at partner gym locations and manually approved by gym owners.</li>
+          <li><strong>Refund Policy:</strong> Membership fees are non-refundable after the plan activation date. Unused carry-forward days expire at the end of your yearly subscription.</li>
+          <li><strong>Carry-Forward Days:</strong> Available exclusively to Yearly subscribers, capped at a maximum of 30 days per subscription year.</li>
+          <li><strong>Pricing Changes:</strong> Fitmaniac reserves the right to modify pricing with 30 days' notice to affected members.</li>
+        </ul>
+      </div>
+
+      <div class="terms-section">
+        <h3>5. Use of the Platform</h3>
+        <p>You agree NOT to:</p>
+        <ul>
+          <li>Share, sell, or transfer your dynamic QR pass to another individual (pass-sharing).</li>
+          <li>Attempt to reverse-engineer, hack, or exploit any component of the Fitmaniac platform.</li>
+          <li>Post content on the Community Hub that is offensive, abusive, discriminatory, or illegal.</li>
+          <li>Use the platform for any commercial purpose without explicit written consent from Fitmaniac.</li>
+          <li>Attempt to circumvent the 30-second rotating QR security token mechanism.</li>
+          <li>Submit false or fabricated segment challenge times on leaderboards.</li>
+        </ul>
+      </div>
+
+      <div class="terms-section">
+        <h3>6. Gym Partner Responsibilities</h3>
+        <p>Partner gyms using the Fitmaniac Gym Owner Portal agree to:</p>
+        <ul>
+          <li>Provide accurate information about gym capacity, operating hours, and class schedules.</li>
+          <li>Process offline payment approvals in a timely manner and maintain accurate member records.</li>
+          <li>Use the gate scanner terminal responsibly and ensure only valid pass-holders gain access.</li>
+          <li>Moderate the Community Hub to maintain a respectful and supportive environment for all members.</li>
+          <li>Keep the Fitmaniac platform and member data confidential and secure.</li>
+        </ul>
+      </div>
+
+      <div class="terms-section">
+        <h3>7. Privacy &amp; Data</h3>
+        <ul>
+          <li>Fitmaniac collects personal data (name, email, phone, subscription details) necessary for platform operation.</li>
+          <li>Data is stored securely using MongoDB with encrypted connections and is never sold to third parties.</li>
+          <li>LocalStorage is used on the client side for offline caching and sync queue management.</li>
+          <li>Check-in history and workout data are stored to provide analytics and personalized features.</li>
+          <li>You may request deletion of your personal data by contacting us at <strong>privacy@fitmaniac.in</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="terms-section">
+        <h3>8. Health &amp; Fitness Disclaimer</h3>
+        <p>Fitmaniac provides fitness tracking and gym management tools. The platform does not provide medical advice. Before beginning any exercise program, consult a qualified healthcare professional. Fitmaniac is not liable for any personal injuries, health issues, or accidents that occur during gym activities. Users participate in physical fitness activities at their own risk.</p>
+      </div>
+
+      <div class="terms-section">
+        <h3>9. Intellectual Property</h3>
+        <p>All content on the Fitmaniac platform — including but not limited to the "Aurora" design system, logos, trademarks, UI layouts, challenge formats, and codebase — is the exclusive intellectual property of Fitmaniac. Unauthorized reproduction, distribution, or use of any platform assets without written permission is strictly prohibited.</p>
+      </div>
+
+      <div class="terms-section">
+        <h3>10. Limitation of Liability</h3>
+        <p>To the maximum extent permitted by applicable law, Fitmaniac shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of revenue, data, goodwill, or business interruption, arising out of your use or inability to use the platform, even if advised of the possibility of such damages. Our total aggregate liability shall not exceed the amount paid by you for the most recent active membership plan.</p>
+      </div>
+
+      <div class="terms-section">
+        <h3>11. Termination</h3>
+        <p>Fitmaniac reserves the right to suspend or terminate your account with or without notice if you violate these Terms, engage in fraudulent activity, or for any other reason we deem appropriate. Upon termination, your access to the platform and all associated data may be permanently deleted.</p>
+      </div>
+
+      <div class="terms-section">
+        <h3>12. Governing Law</h3>
+        <p>These Terms are governed by and construed in accordance with the laws of India. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts in Bangalore, Karnataka, India.</p>
+      </div>
+
+      <div class="terms-section">
+        <h3>13. Contact Us</h3>
+        <p>For questions about these Terms or our platform, please contact:</p>
+        <ul>
+          <li><strong>Email:</strong> legal@fitmaniac.in</li>
+          <li><strong>Support:</strong> support@fitmaniac.in</li>
+          <li><strong>Address:</strong> Fitmaniac Technologies Pvt. Ltd., Koramangala, Bangalore – 560095, Karnataka, India</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer id="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">⚡ Fitmaniac</div>
+        <p>India's premium gym partner network — connecting athletes, gym owners, and trainers through smart technology, gamified fitness, and a thriving community.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/fitmaniac.in" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Instagram">📸</a>
+          <a href="https://twitter.com/fitmaniac_in" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Twitter">🐦</a>
+          <a href="https://www.youtube.com/@fitmaniac" target="_blank" rel="noopener" class="footer-social-icon" aria-label="YouTube">▶️</a>
+          <a href="https://www.linkedin.com/company/fitmaniac" target="_blank" rel="noopener" class="footer-social-icon" aria-label="LinkedIn">💼</a>
+          <a href="https://t.me/fitmaniac_official" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Telegram">✈️</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#screenshots">App Showcase</a></li>
+          <li><a href="#download">Download App</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <ul>
+          <li><a href="#testimonials">Member Stories</a></li>
+          <li><a href="#social">Follow Us</a></li>
+          <li><a href="https://t.me/fitmaniac_official" target="_blank" rel="noopener">Telegram Group</a></li>
+          <li><a href="mailto:partnerships@fitmaniac.in">Gym Partnerships</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal &amp; Support</h4>
+        <ul>
+          <li><a href="#terms">Terms &amp; Conditions</a></li>
+          <li><a href="#terms">Privacy Policy</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="mailto:support@fitmaniac.in">Contact Support</a></li>
+          <li><a href="mailto:legal@fitmaniac.in">Legal Inquiries</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Fitmaniac Technologies Pvt. Ltd. All rights reserved. Made with ❤️ in Bangalore, India.</p>
+      <div class="footer-bottom-links">
+        <a href="#terms">Terms</a>
+        <a href="#terms">Privacy</a>
+        <a href="mailto:support@fitmaniac.in">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to Top -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<script>
+  // ===================== NAVBAR SCROLL =====================
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+    document.getElementById('back-to-top').classList.toggle('show', window.scrollY > 400);
+  });
+
+  // ===================== MOBILE NAV =====================
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // ===================== FAQ ACCORDION =====================
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // ===================== TESTIMONIALS SLIDER =====================
+  const track = document.getElementById('testimonialsTrack');
+  const dotsContainer = document.getElementById('sliderDots');
+  let current = 0;
+  let cardWidth = 0;
+  let visibleCards = 3;
+  let totalSlides = 0;
+  let autoplayTimer;
+
+  function initSlider() {
+    const windowW = window.innerWidth;
+    visibleCards = windowW < 600 ? 1 : windowW < 900 ? 1 : 3;
+    const cards = track.querySelectorAll('.testimonial-card');
+    totalSlides = Math.max(0, cards.length - visibleCards + 1);
+    if (cards.length > 0) {
+      const gap = 24;
+      const containerW = track.parentElement.offsetWidth;
+      cardWidth = (containerW - gap * (visibleCards - 1)) / visibleCards;
+      cards.forEach(c => { c.style.minWidth = cardWidth + 'px'; });
+    }
+    // dots
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'slider-dot' + (i === current ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    }
+    goTo(Math.min(current, totalSlides - 1));
+  }
+
+  function goTo(idx) {
+    current = Math.max(0, Math.min(idx, totalSlides - 1));
+    const offset = current * (cardWidth + 24);
+    track.style.transform = `translateX(-${offset}px)`;
+    dotsContainer.querySelectorAll('.slider-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+
+  document.getElementById('sliderPrev').addEventListener('click', () => { goTo(current - 1); resetAutoplay(); });
+  document.getElementById('sliderNext').addEventListener('click', () => { goTo(current < totalSlides - 1 ? current + 1 : 0); resetAutoplay(); });
+
+  function resetAutoplay() {
+    clearInterval(autoplayTimer);
+    autoplayTimer = setInterval(() => goTo(current < totalSlides - 1 ? current + 1 : 0), 5000);
+  }
+
+  window.addEventListener('resize', initSlider);
+  initSlider();
+  resetAutoplay();
+
+  // ===================== SCROLL REVEAL =====================
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ===================== ANIMATED COUNTER =====================
+  function animateCounter(el, target, prefix='', suffix='') {
+    const duration = 2000;
+    const start = performance.now();
+    const update = (time) => {
+      const progress = Math.min((time - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(eased * target);
+      el.textContent = prefix + current.toLocaleString('en-IN') + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const nums = entry.target.querySelectorAll('.num');
+        // Animate: 50+, 10K+, ₹12K, 4.9★
+        // We'll do a simple text reveal for these
+        nums[0] && animateNum(nums[0], '50+');
+        nums[1] && animateNum(nums[1], '10K+');
+        nums[2] && animateNum(nums[2], '₹12K');
+        nums[3] && animateNum(nums[3], '4.9★');
+        statsObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  function animateNum(el, finalVal) {
+    const numMatch = finalVal.match(/[\d,\.]+/);
+    const prefix = finalVal.match(/^[^\d]*/)?.[0] || '';
+    const suffix = finalVal.match(/[^\d]+$/)?.[0] || '';
+    if (!numMatch) return;
+    const target = parseFloat(numMatch[0].replace(',',''));
+    const duration = 1800;
+    const start = performance.now();
+    const update = (t) => {
+      const p = Math.min((t - start) / duration, 1);
+      const e = 1 - Math.pow(1 - p, 3);
+      const cur = Math.round(e * target * 10) / 10;
+      el.textContent = prefix + (Number.isInteger(target) ? cur : cur) + (suffix);
+      if (p < 1) requestAnimationFrame(update);
+      else el.textContent = finalVal;
+    };
+    requestAnimationFrame(update);
+  }
+
+  const statsSection = document.querySelector('.hero-stats');
+  if (statsSection) statsObserver.observe(statsSection);
+</script>
+</body>
+</html>
