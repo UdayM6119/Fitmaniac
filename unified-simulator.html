@@ -400,6 +400,7 @@
           <span id="network-indicator-dot" style="width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); transition: all 0.3s ease;"></span>
           <span id="network-indicator-label">Network: Online</span>
         </button>
+        <button class="badge badge-cyan" id="start-tour-btn" onclick="startGuidedTour()" style="cursor:pointer; border:1px solid var(--accent-cyan); background:rgba(0, 242, 254, 0.1); font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 6px;" title="Start Interactive Guided Tour">🎬 Play Guided Tour</button>
         <button class="badge badge-cyan" id="global-theme-btn" onclick="toggleTheme()" style="cursor:pointer; border:1px solid var(--accent-cyan); background:rgba(0, 242, 254, 0.1); padding: 0; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; line-height: 1;" title="Toggle Dark/Light theme">☀️</button>
       </div>
       <div style="font-size: 12px; color: var(--text-muted); text-align: right;">
@@ -2596,7 +2597,6 @@
       if (yrSpan) yrSpan.innerText = yearlyCount;
       const moSpan = document.getElementById('chart-monthly-count');
       if (moSpan) moSpan.innerText = monthlyCount;
-      
       const ringYearly = document.getElementById('ring-yearly');
       const ringMonthly = document.getElementById('ring-monthly');
       
@@ -2606,6 +2606,241 @@
         ringMonthly.setAttribute('stroke-dashoffset', `-${yearlyPct}`);
       }
     }
+
+    // ===================== GUIDED DEMO TOUR =====================
+    let currentTourStep = 0;
+    
+    const tourSteps = [
+      {
+        title: "Welcome to Fitmaniac! ⚡",
+        text: "This interactive guided tour will show you how our application connects Super Admins, Gym Desk Owners, and Athletes in one real-time ecosystem.<br><br>Let's start by registering a gym center!",
+        action: () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          clearHighlights();
+        }
+      },
+      {
+        title: "1. Super Admin: Add Partner Gym 🏢",
+        text: "We will register a brand new partner gym, <strong>Pulse Fitness HSR</strong>, with scanner barcode token <code>pulse_hsr</code>. Watch the fields populate automatically!",
+        action: () => {
+          const cols = document.querySelectorAll('.portal-column');
+          cols[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          highlightColumn(0);
+          document.getElementById('gym-name').value = 'Pulse Fitness HSR';
+          document.getElementById('gym-loc').value = 'Sector 2, HSR Layout, Bangalore';
+          document.getElementById('gym-barcode').value = 'pulse_hsr';
+        }
+      },
+      {
+        title: "2. Registering Gym Partner on the Network 📡",
+        text: "Submitting the form registers the gym partner onto our network. Look at the <strong>Partner Network List</strong> to see it get created!",
+        action: () => {
+          highlightColumn(0);
+          const form = document.getElementById('add-gym-form');
+          form.dispatchEvent(new Event('submit'));
+        }
+      },
+      {
+        title: "3. Gym Desk Portal: Select Workspace 🏢",
+        text: "Now, switching to the Gym Desk portal (column 2), let's select our active workspace as the newly added <strong>Pulse Fitness HSR</strong> gym.",
+        action: () => {
+          const cols = document.querySelectorAll('.portal-column');
+          cols[1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          highlightColumn(1);
+          
+          const selector = document.getElementById('client-gym-selector');
+          const opt = Array.from(selector.options).find(o => o.text.includes('Pulse Fitness HSR'));
+          if (opt) {
+            selector.value = opt.value;
+            clientSelectGym(opt.value);
+          }
+        }
+      },
+      {
+        title: "4. Register New Athlete 🏋️",
+        text: "Let's register a new member, <strong>Aarav Mehta</strong>, under a Yearly plan. Because it is a Yearly plan, the owner awards Aarav 15 carry-forward absent days so travel or illness doesn't waste his membership!",
+        action: () => {
+          highlightColumn(1);
+          clientChangeTab('members');
+          document.getElementById('member-name').value = 'Aarav Mehta';
+          document.getElementById('member-email').value = 'aarav@gmail.com';
+          document.getElementById('member-plan').value = 'Yearly';
+          const selectPlan = document.getElementById('member-plan');
+          selectPlan.dispatchEvent(new Event('change'));
+          document.getElementById('member-carryforward').value = '15';
+          document.getElementById('member-payment').value = 'Online';
+        }
+      },
+      {
+        title: "5. Athlete Onboarded to Roster 🎉",
+        text: "Clicking Register adds Aarav to the gym database. Aarav can now download the Fitmaniac app to check in!",
+        action: () => {
+          highlightColumn(1);
+          const form = document.getElementById('add-member-form');
+          form.dispatchEvent(new Event('submit'));
+        }
+      },
+      {
+        title: "6. Fitmaniac Mobile App: OTP Login 📱",
+        text: "Aarav opens the Fitmaniac App (column 3). Let's request a secure, passwordless magic OTP for his registered email: <code>aarav@gmail.com</code>.",
+        action: () => {
+          const cols = document.querySelectorAll('.portal-column');
+          cols[2].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          highlightColumn(2);
+          
+          if (typeof renderPhoneGateway === 'function') {
+            renderPhoneGateway();
+          }
+          setTimeout(() => {
+            document.getElementById('phone-email-input').value = 'aarav@gmail.com';
+            phoneTriggerOtpRequest();
+          }, 300);
+        }
+      },
+      {
+        title: "7. Verify & Access App Dashboard 🔓",
+        text: "Fitmaniac automatically displays a demo OTP below. We will verify and log Aarav in to see his streak achievements and carry-forward days!",
+        action: () => {
+          highlightColumn(2);
+          const otpContainer = document.querySelector('[style*="Verification OTP is"] strong');
+          const otpCode = otpContainer ? otpContainer.innerText : '1234';
+          document.getElementById('phone-otp-input').value = otpCode;
+          phoneVerifyOtp(otpCode);
+        }
+      },
+      {
+        title: "8. Gate Scanner: Dynamic QR Check-In 🚪",
+        text: "Aarav taps 'Show Entrance QR Pass' to generate his secure rotating barcode. Let's scan it under the Gate Scanner Terminal!",
+        action: () => {
+          highlightColumn(2);
+          if (typeof phoneOpenScanModal === 'function') {
+            phoneOpenScanModal();
+          }
+          setTimeout(() => {
+            simulateGateScan();
+          }, 800);
+        }
+      },
+      {
+        title: "9. Access Granted! Gate Opened 🔓",
+        text: "Boom! The scanner terminal reads the rotating security token, plays a success tone, and unlocks the gate. Aarav's gym check-in log is updated instantly!",
+        action: () => {
+          highlightColumn(2);
+          const gateCol = document.querySelector('.phone-container').parentElement;
+          gateCol.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      },
+      {
+        title: "10. Publish a Leaderboard Challenge 🏆",
+        text: "To drive engagement, let's publish a segment circuit challenge (like Planks + Burpees + Squats) at the gym desk for Aarav and co-members to complete.",
+        action: () => {
+          const cols = document.querySelectorAll('.portal-column');
+          cols[1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          highlightColumn(1);
+          
+          clientChangeTab('challenges');
+          document.getElementById('challenge-title').value = 'HSR Planks Challenge';
+          document.getElementById('challenge-target').value = '3x Planks, 20x Burpees, 50x Squats';
+          
+          const form = document.getElementById('add-challenge-form');
+          form.dispatchEvent(new Event('submit'));
+        }
+      },
+      {
+        title: "Interactive Demo Complete! 🚀",
+        text: "That's it! You've seen the core onboarding and access control flows. Feel free to click around, toggle the Internet Network off to test the Offline Sync engine, renew membership via UPI, or explore forum broadcasts!",
+        action: () => {
+          clearHighlights();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    ];
+
+    window.startGuidedTour = function() {
+      currentTourStep = 0;
+      document.getElementById('tour-guide-card').style.display = 'block';
+      updateTourUI();
+    };
+
+    window.stopGuidedTour = function() {
+      document.getElementById('tour-guide-card').style.display = 'none';
+      clearHighlights();
+    };
+
+    window.nextTourStep = function() {
+      if (currentTourStep < tourSteps.length - 1) {
+        currentTourStep++;
+        updateTourUI();
+      } else {
+        stopGuidedTour();
+      }
+    };
+
+    window.prevTourStep = function() {
+      if (currentTourStep > 0) {
+        currentTourStep--;
+        updateTourUI();
+      }
+    };
+
+    function updateTourUI() {
+      const step = tourSteps[currentTourStep];
+      document.getElementById('tour-step-title').innerText = step.title;
+      document.getElementById('tour-step-text').innerHTML = step.text;
+      document.getElementById('tour-step-indicator').innerText = `Step ${currentTourStep + 1} of ${tourSteps.length}`;
+      
+      const pct = ((currentTourStep + 1) / tourSteps.length) * 100;
+      document.getElementById('tour-progress-bar').style.width = `${pct}%`;
+      
+      document.getElementById('tour-prev-btn').disabled = currentTourStep === 0;
+      document.getElementById('tour-next-btn').innerText = currentTourStep === tourSteps.length - 1 ? "Finish" : "Next Step";
+      
+      if (step.action) step.action();
+    }
+
+    function highlightColumn(index) {
+      const cols = document.querySelectorAll('.portal-column');
+      cols.forEach((col, i) => {
+        if (i === index) {
+          col.style.transition = 'all 0.5s ease';
+          col.style.boxShadow = '0 0 40px rgba(0, 242, 254, 0.4)';
+          col.style.borderColor = 'var(--accent-cyan)';
+          col.style.opacity = '1';
+        } else {
+          col.style.opacity = '0.25';
+          col.style.boxShadow = 'none';
+          col.style.borderColor = 'var(--border-glass)';
+        }
+      });
+    }
+
+    function clearHighlights() {
+      const cols = document.querySelectorAll('.portal-column');
+      cols.forEach((col) => {
+        col.style.opacity = '1';
+        col.style.boxShadow = 'none';
+        col.style.borderColor = 'var(--border-glass)';
+      });
+    }
   </script>
+
+  <!-- Guided Tour Floating Panel -->
+  <div id="tour-guide-card" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(8,12,21,0.95); border:2px solid var(--accent-cyan); border-radius:16px; padding:20px; width:450px; max-width:90%; box-shadow:0 10px 50px rgba(0,242,254,0.3); backdrop-filter:blur(20px);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h4 id="tour-step-title" style="font-size:14px; font-family:'Outfit'; font-weight:bold; color:var(--accent-cyan);">Fitmaniac Guide</h4>
+      <button onclick="stopGuidedTour()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:14px;">✕</button>
+    </div>
+    <div id="tour-step-text" style="font-size:12px; color:var(--text-main); line-height:1.5; margin-bottom:15px; min-height:48px;"></div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span id="tour-step-indicator" style="font-size:10px; color:var(--text-muted);">Step 1 of 12</span>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-secondary" id="tour-prev-btn" onclick="prevTourStep()" style="padding:6px 12px; font-size:10px; width:auto; border-radius:6px;">Back</button>
+        <button class="btn btn-primary" id="tour-next-btn" onclick="nextTourStep()" style="padding:6px 12px; font-size:10px; width:auto; border-radius:6px; background:var(--gradient-primary); color:#000; font-weight:bold;">Next Step</button>
+      </div>
+    </div>
+    <div style="margin-top:12px; height:3px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+      <div id="tour-progress-bar" style="height:100%; width:0%; background:var(--accent-cyan); transition:width 0.3s ease;"></div>
+    </div>
+  </div>
 </body>
 </html>
